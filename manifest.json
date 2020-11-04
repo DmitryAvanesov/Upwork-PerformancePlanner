@@ -3,16 +3,22 @@
   "version": "1.2",
   "description": "There will be a description",
   "permissions": [
-    "declarativeContent"
+    "declarativeContent",
+    "identity"
   ],
   "background": {
-    "scripts": [
-      "background.js"
-    ],
+    "page": "background.html",
     "persistent": false
   },
   "page_action": {
     "default_popup": "popup.html"
   },
+  "oauth2": {
+    "client_id": "830407752509-qtgnjs8tde5o0nr1bjh19bvtpv2hn3g1.apps.googleusercontent.com",
+    "scopes": [
+      "https://www.googleapis.com/auth/spreadsheets"
+    ]
+  },
+  "content_security_policy": "script-src 'self' https://apis.google.com/; object-src 'self'",
   "manifest_version": 2
 }
