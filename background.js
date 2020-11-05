@@ -42,43 +42,89 @@ function onLoad() {
 }
 
 function transformJSON(data) {
-  const SPREADSHEET_ID = "1gv49jkuEzNqeUCoIpaC_Xhi47l4VVpsd8OLSJQYgCUg";
-  const RANGE = "Sheet1";
+  console.log(data);
+  const SPREADSHEET_ID = "1KZJiwBaSZ-jIASS0j7b62NkanW1WWdP7OHjdu_qbJjk";
   const VALUE_INPUT_OPTION = "RAW";
 
-  const values = [];
+  // accessing the list of sheets
+  gapi.client.sheets.spreadsheets
+    .get({ spreadsheetId: SPREADSHEET_ID })
+    .then(function (response) {
+      const { sheets } = response.result;
 
-  for (let i = 1; i < data.length; i++) {
-    const row = [];
-    row.push(data[i][1][3]);
+      const RESOURCE = {
+        requests: [
+          {
+            addSheet: {
+              properties: {
+                title: `Sheet${sheets.length + 1}`,
+              },
+            },
+          },
+        ],
+      };
 
-    if (data[i][4][1]) {
-      row.push(Math.round(data[i][4][1] / 1000000));
-    } else if (data[i][4][2]) {
-      row.push(Math.round(data[i][4][2] / 100));
-    } else if (data[i][4][3]) {
-      row.push(Math.round(data[i][4][3]));
-    } else {
-      console.log("Something's wrong. I can feel it...");
-    }
+      // adding the next sheet
+      gapi.client.sheets.spreadsheets
+        .batchUpdate({
+          spreadsheetId: SPREADSHEET_ID,
+          resource: RESOURCE,
+        })
+        .then(function () {
+          const RANGE = `Sheet${sheets.length + 1}!A2:B${data.length}`;
+          const values = [];
 
-    values.push(row);
-  }
+          for (let i = 1; i < data.length; i++) {
+            const row = [];
+            row.push(data[i][1][3]);
 
-  const BODY = {
-    values,
-  };
+            if (data[i][4]) {
+              if (data[i][4][1]) {
+                row.push(data[i][4][1] / 1000000);
+              } else if (data[i][4][2]) {
+                row.push(data[i][4][2] / 100);
+              } else if (data[i][4][3]) {
+                row.push(data[i][4][3]);
+              }
+            } else if (data[i][6]) {
+              if (data[i][6][1]) {
+                row.push(data[i][6][1] / 100);
+              }
+            }
 
-  gapi.client.sheets.spreadsheets.values
-    .update({
-      spreadsheetId: SPREADSHEET_ID,
-      range: RANGE,
-      valueInputOption: VALUE_INPUT_OPTION,
-      resource: BODY,
-    })
-    .then((response) => {
-      const result = response.result;
-      console.log(`${result.updatedCells} cells updated.`);
+            values.push(row);
+          }
+
+          const BODY = {
+            values,
+          };
+
+          // writing the data into the new sheet
+          gapi.client.sheets.spreadsheets.values
+            .update({
+              spreadsheetId: SPREADSHEET_ID,
+              range: RANGE,
+              valueInputOption: VALUE_INPUT_OPTION,
+              resource: BODY,
+            })
+            .then((response) => {
+              const result = response.result;
+              console.log(`${result.updatedCells} cells updated.`);
+            });
+
+          // adding columns' headings
+          gapi.client.sheets.spreadsheets.values
+            .update({
+              spreadsheetId: SPREADSHEET_ID,
+              range: `Sheet${sheets.length + 1}!A1:B1`,
+              valueInputOption: VALUE_INPUT_OPTION,
+              resource: { values: [["spend", "rev"]] },
+            })
+            .then((response) => {
+              const result = response.result;
+              console.log(`${result.updatedCells} cells updated.`);
+            });
+        });
     });
 }
 
