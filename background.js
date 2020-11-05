@@ -24,7 +24,7 @@ function onLoad() {
     ];
     const SCOPES = "https://www.googleapis.com/auth/spreadsheets";
 
-    gapi.load("client:auth2", () => {
+    gapi.load("client:auth2", function () {
       gapi.client
         .init({
           apiKey: API_KEY,
@@ -36,23 +36,54 @@ function onLoad() {
           gapi.auth.setToken({
             access_token: token,
           });
-
-          gapi.client.sheets.spreadsheets
-            .create({
-              properties: {
-                title: "Generated Sheet",
-              },
-            })
-            .then((response) => {
-              console.log(response);
-            });
         });
     });
   });
 }
 
+function transformJSON(data) {
+  const SPREADSHEET_ID = "1gv49jkuEzNqeUCoIpaC_Xhi47l4VVpsd8OLSJQYgCUg";
+  const RANGE = "Sheet1";
+  const VALUE_INPUT_OPTION = "RAW";
+
+  const values = [];
+
+  for (let i = 1; i < data.length; i++) {
+    const row = [];
+    row.push(data[i][1][3]);
+
+    if (data[i][4][1]) {
+      row.push(Math.round(data[i][4][1] / 1000000));
+    } else if (data[i][4][2]) {
+      row.push(Math.round(data[i][4][2] / 100));
+    } else if (data[i][4][3]) {
+      row.push(Math.round(data[i][4][3]));
+    } else {
+      console.log("Something's wrong. I can feel it...");
+    }
+
+    values.push(row);
+  }
+
+  const BODY = {
+    values,
+  };
+
+  gapi.client.sheets.spreadsheets.values
+    .update({
+      spreadsheetId: SPREADSHEET_ID,
+      range: RANGE,
+      valueInputOption: VALUE_INPUT_OPTION,
+      resource: BODY,
+    })
+    .then((response) => {
+      const result = response.result;
+      console.log(`${result.updatedCells} cells updated.`);
+    });
+}
+
 window.addEventListener("load", onLoad);
 
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-  onLoad();
+  transformJSON(request.data);
 });
