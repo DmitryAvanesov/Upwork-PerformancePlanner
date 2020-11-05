@@ -14,10 +14,8 @@ chrome.runtime.onInstalled.addListener(function () {
   });
 });
 
-const onLoad = () => {
+function onLoad() {
   chrome.identity.getAuthToken({ interactive: true }, function (token) {
-    console.log(token);
-
     const API_KEY = "AIzaSyB3izcQikDMTg1E4hlMeZx3u0Dy4TMYQdM";
     const CLIENT_ID =
       "830407752509-qtgnjs8tde5o0nr1bjh19bvtpv2hn3g1.apps.googleusercontent.com";
@@ -26,17 +24,15 @@ const onLoad = () => {
     ];
     const SCOPES = "https://www.googleapis.com/auth/spreadsheets";
 
-    gapi.load("client:auth2", initClient);
-
-    function initClient() {
+    gapi.load("client:auth2", () => {
       gapi.client
         .init({
           apiKey: API_KEY,
+          clientId: CLIENT_ID,
           discoveryDocs: DISCOVERY_DOCS,
+          scopes: SCOPES,
         })
         .then(function () {
-          console.log("SUCCESS");
-
           gapi.auth.setToken({
             access_token: token,
           });
@@ -51,9 +47,11 @@ const onLoad = () => {
               console.log(response);
             });
         });
-    }
+    });
   });
-};
+}
+
+window.addEventListener("load", onLoad);
 
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   onLoad();
