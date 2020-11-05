@@ -51,17 +51,16 @@ function transformJSON(data) {
     .get({ spreadsheetId: SPREADSHEET_ID })
     .then(function (response) {
       const { sheets } = response.result;
-      console.log(sheets);
 
       // calculating the next sheet ID
       const nextSheetId =
-        sheets.reduce(
-          (previousValue, currentValue) =>
-            parseInt(currentValue.properties.title) > previousValue
-              ? parseInt(currentValue.properties.title)
-              : previousValue,
-          0
-        ) + 1;
+        sheets.reduce((previousValue, currentValue) => {
+          const title = currentValue.properties.title;
+
+          return isNaN(title) || parseInt(title) > previousValue
+            ? parseInt(title)
+            : previousValue;
+        }, 1) + 1;
 
       const RESOURCE = {
         requests: [
