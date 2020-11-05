@@ -51,13 +51,24 @@ function transformJSON(data) {
     .get({ spreadsheetId: SPREADSHEET_ID })
     .then(function (response) {
       const { sheets } = response.result;
+      console.log(sheets);
+
+      // calculating the next sheet ID
+      const nextSheetId =
+        sheets.reduce(
+          (previousValue, currentValue) =>
+            parseInt(currentValue.properties.title) > previousValue
+              ? parseInt(currentValue.properties.title)
+              : previousValue,
+          0
+        ) + 1;
 
       const RESOURCE = {
         requests: [
           {
             addSheet: {
               properties: {
-                title: `Sheet${sheets.length + 1}`,
+                title: nextSheetId.toString(),
               },
             },
           },
@@ -71,7 +82,7 @@ function transformJSON(data) {
           resource: RESOURCE,
         })
         .then(function () {
-          const RANGE = `Sheet${sheets.length + 1}!A2:B${data.length}`;
+          const RANGE = `${nextSheetId}!A2:B${data.length}`;
           const values = [];
 
           for (let i = 1; i < data.length; i++) {
@@ -116,7 +127,7 @@ function transformJSON(data) {
           gapi.client.sheets.spreadsheets.values
             .update({
               spreadsheetId: SPREADSHEET_ID,
-              range: `Sheet${sheets.length + 1}!A1:B1`,
+              range: `${nextSheetId}!A1:B1`,
               valueInputOption: VALUE_INPUT_OPTION,
               resource: { values: [["spend", "rev"]] },
             })
