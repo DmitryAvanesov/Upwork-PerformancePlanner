@@ -44,7 +44,7 @@ function onLoad() {
 function transformJSON(data) {
   console.log(data);
   const SPREADSHEET_ID = "1KZJiwBaSZ-jIASS0j7b62NkanW1WWdP7OHjdu_qbJjk";
-  const VALUE_INPUT_OPTION = "RAW";
+  const VALUE_INPUT_OPTION = "USER_ENTERED";
 
   // accessing the list of sheets
   gapi.client.sheets.spreadsheets
