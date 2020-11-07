@@ -56,7 +56,7 @@ function addSheet(spreadsheet, data, spreadsheetId) {
   const { sheets } = spreadsheet.result;
 
   // calculating the next sheet ID
-  const nextSheetId =
+  const nextSheetNumber =
     sheets.reduce((previousValue, currentValue) => {
       const title = currentValue.properties.title;
 
@@ -70,7 +70,7 @@ function addSheet(spreadsheet, data, spreadsheetId) {
       {
         addSheet: {
           properties: {
-            title: nextSheetId.toString(),
+            title: nextSheetNumber.toString(),
           },
         },
       },
@@ -83,13 +83,18 @@ function addSheet(spreadsheet, data, spreadsheetId) {
       spreadsheetId: spreadsheetId,
       resource: RESOURCE,
     })
-    .then(function () {
-      writeData(data, spreadsheetId, nextSheetId);
+    .then(function (response) {
+      console.log(response);
+      writeData(
+        data,
+        spreadsheetId,
+        response.result.replies[0].addSheet.properties
+      );
     });
 }
 
-function writeData(data, spreadsheetId, nextSheetId) {
-  const RANGE = `${nextSheetId}!A2:B${data.length}`;
+function writeData(data, spreadsheetId, sheet) {
+  const RANGE = `${sheet.title}!A2:B${data.length}`;
   const VALUE_INPUT_OPTION = "USER_ENTERED";
   const values = [];
 
@@ -126,27 +131,107 @@ function writeData(data, spreadsheetId, nextSheetId) {
       valueInputOption: VALUE_INPUT_OPTION,
       resource: BODY,
     })
-    .then((response) => {
-      const result = response.result;
-      console.log(`${result.updatedCells} cells updated.`);
-    });
+    .then(function () {});
 
   // adding columns' headings
   gapi.client.sheets.spreadsheets.values
     .update({
       spreadsheetId: spreadsheetId,
-      range: `${nextSheetId}!A1:B1`,
+      range: `${sheet.title}!A1:B1`,
       valueInputOption: VALUE_INPUT_OPTION,
       resource: { values: [["spend", "rev"]] },
     })
-    .then((response) => {
-      const result = response.result;
-      console.log(`${result.updatedCells} cells updated.`);
+    .then(function () {
+      drawChart(data, spreadsheetId, sheet);
     });
 }
 
+function drawChart(data, spreadsheetId, sheet) {
+  const RESOURCE = {
+    requests: [
+      {
+        addChart: {
+          chart: {
+            spec: {
+              title: "rev vs spend",
+              basicChart: {
+                chartType: "LINE",
+                legendPosition: "NO_LEGEND",
+                axis: [
+                  {
+                    position: "BOTTOM_AXIS",
+                    title: "spend",
+                  },
+                  {
+                    position: "LEFT_AXIS",
+                    title: "rev",
+                  },
+                ],
+                domains: [
+                  {
+                    domain: {
+                      sourceRange: {
+                        sources: [
+                          {
+                            sheetId: sheet.sheetId,
+                            startRowIndex: 1,
+                            endRowIndex: data.length,
+                            startColumnIndex: 0,
+                            endColumnIndex: 1,
+                          },
+                        ],
+                      },
+                    },
+                  },
+                ],
+                series: [
+                  {
+                    series: {
+                      sourceRange: {
+                        sources: [
+                          {
+                            sheetId: sheet.sheetId,
+                            startRowIndex: 1,
+                            endRowIndex: data.length,
+                            startColumnIndex: 1,
+                            endColumnIndex: 2,
+                          },
+                        ],
+                      },
+                    },
+                    targetAxis: "LEFT_AXIS",
+                  },
+                ],
+                headerCount: 2,
+              },
+            },
+            position: {
+              overlayPosition: {
+                anchorCell: {
+                  sheetId: sheet.sheetId,
+                  rowIndex: 1,
+                  columnIndex: 3,
+                },
+              },
+            },
+          },
+        },
+      },
+    ],
+  };
+
+  gapi.client.sheets.spreadsheets
+    .batchUpdate({
+      spreadsheetId: spreadsheetId,
+      resource: RESOURCE,
+    })
+    .then(function () {});
+}
+
+// when the gapi script is loaded, authorize the user
 window.addEventListener("load", onLoad);
 
+// handling the input JSON
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   handleJSON(request.data);
 });
