@@ -139,25 +139,133 @@ function transformJSON(data) {
 }
 
 function formatJSON(data) {
-  console.log(data);
+  const SPREADSHEET_ID = "1KZJiwBaSZ-jIASS0j7b62NkanW1WWdP7OHjdu_qbJjk";
+  const VALUE_INPUT_OPTION = "RAW";
+
   const result = getPath(data, "", []);
-  // console.log(result);
-  const array = [];
-  for (let el of result) {
-    // fix this
-    array.push({ key: , value: el.split("/")[el.split("/").length - 1] })
+  const formattedArray = [];
+
+  for (const el of result) {
+    const elSplit = el.split("/");
+
+    formattedArray.push({
+      key: elSplit.slice(0, elSplit.length - 1).join("/"),
+      value: elSplit.pop(),
+    });
   }
+
+  // accessing the list of sheets
+  gapi.client.sheets.spreadsheets
+    .get({ spreadsheetId: SPREADSHEET_ID })
+    .then(function (response) {
+      const { sheets } = response.result;
+
+      // calculating the next sheet ID
+      const nextSheetId =
+        sheets.reduce((previousValue, currentValue) => {
+          const title = currentValue.properties.title;
+
+          return isNaN(title) || parseInt(title) > previousValue
+            ? parseInt(title)
+            : previousValue;
+        }, 1) + 1;
+
+      const RESOURCE = {
+        requests: [
+          {
+            addSheet: {
+              properties: {
+                title: nextSheetId.toString(),
+              },
+            },
+          },
+        ],
+      };
+
+      // adding the next sheet
+      gapi.client.sheets.spreadsheets
+        .batchUpdate({
+          spreadsheetId: SPREADSHEET_ID,
+          resource: RESOURCE,
+        })
+        .then(function (response) {
+          const RANGE = `${nextSheetId}!A2:B${formattedArray.length}`;
+          const sheet = response.result.replies[0].addSheet.properties;
+          const values = [];
+
+          for (let i = 1; i < formattedArray.length; i++) {
+            const row = [];
+            row.push(formattedArray[i].key);
+            row.push(formattedArray[i].value);
+            values.push(row);
+          }
+
+          const BODY = {
+            values,
+          };
+
+          // writing the data into the new sheet
+          gapi.client.sheets.spreadsheets.values
+            .update({
+              spreadsheetId: SPREADSHEET_ID,
+              range: RANGE,
+              valueInputOption: VALUE_INPUT_OPTION,
+              resource: BODY,
+            })
+            .then((response) => {
+              const result = response.result;
+              console.log(`${result.updatedCells} cells updated.`);
+            });
+
+          // adding columns' headings
+          gapi.client.sheets.spreadsheets.values
+            .update({
+              spreadsheetId: SPREADSHEET_ID,
+              range: `${nextSheetId}!A1:B1`,
+              valueInputOption: VALUE_INPUT_OPTION,
+              resource: { values: [["key", "value"]] },
+            })
+            .then(() => {
+              // auto resize dimensions
+
+              const RESOURCE_AUTO_RESIZE_DIMENSIONS = {
+                requests: [
+                  {
+                    autoResizeDimensions: {
+                      dimensions: {
+                        sheetId: sheet.sheetId,
+                        dimension: "COLUMNS",
+                        startIndex: 0,
+                        endIndex: 2,
+                      },
+                    },
+                  },
+                ],
+              };
+
+              gapi.client.sheets.spreadsheets
+                .batchUpdate({
+                  spreadsheetId: SPREADSHEET_ID,
+                  resource: RESOURCE_AUTO_RESIZE_DIMENSIONS,
+                })
+                .then(function () {});
+            });
+        });
+    });
 }
 
 function getPath(object, path, resultObj) {
   path = path || [];
+
   Object.keys(object).forEach(function (key) {
-    if (object[key] && typeof object[key] === 'object') {
+    if (object[key] && typeof object[key] === "object") {
       return getPath(object[key], path.concat(key), resultObj);
     }
-    const obj = path.concat([key, object[key]]).join('/');
+
+    const obj = path.concat([key, object[key]]).join("/");
     resultObj.push(obj);
   });
+
   return resultObj;
 }
 
@@ -166,8 +274,7 @@ window.addEventListener("load", onLoad);
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   if (request.message === "TRANSFORM_JSON") {
     transformJSON(request.data);
-  }
-  else if (request.message === "FORMAT_JSON") {
+  } else if (request.message === "FORMAT_JSON") {
     formatJSON(request.data);
   }
 });
