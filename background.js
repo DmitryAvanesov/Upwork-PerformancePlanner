@@ -143,9 +143,10 @@ function formatJSON(data) {
   const result = getPath(data, "", []);
   // console.log(result);
   const array = [];
-  // for (let el of result){
-  //   array.push({key: el.split("/")[el.split("/").length - 1], value: })
-  // }
+  for (let el of result) {
+    // fix this
+    array.push({ key: , value: el.split("/")[el.split("/").length - 1] })
+  }
 }
 
 function getPath(object, path, resultObj) {
@@ -156,7 +157,6 @@ function getPath(object, path, resultObj) {
     }
     const obj = path.concat([key, object[key]]).join('/');
     resultObj.push(obj);
-    console.log(key, object[key], [key, object[key]]);
   });
   return resultObj;
 }
