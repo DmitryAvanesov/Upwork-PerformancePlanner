@@ -138,8 +138,36 @@ function transformJSON(data) {
     });
 }
 
+function formatJSON(data) {
+  console.log(data);
+  const result = getPath(data, "", []);
+  // console.log(result);
+  const array = [];
+  // for (let el of result){
+  //   array.push({key: el.split("/")[el.split("/").length - 1], value: })
+  // }
+}
+
+function getPath(object, path, resultObj) {
+  path = path || [];
+  Object.keys(object).forEach(function (key) {
+    if (object[key] && typeof object[key] === 'object') {
+      return getPath(object[key], path.concat(key), resultObj);
+    }
+    const obj = path.concat([key, object[key]]).join('/');
+    resultObj.push(obj);
+    console.log(key, object[key], [key, object[key]]);
+  });
+  return resultObj;
+}
+
 window.addEventListener("load", onLoad);
 
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-  transformJSON(request.data);
+  if (request.message === "TRANSFORM_JSON") {
+    transformJSON(request.data);
+  }
+  else if (request.message === "FORMAT_JSON") {
+    formatJSON(request.data);
+  }
 });
