@@ -106,10 +106,8 @@ function writeTransformedData(data, spreadsheetId, sheet) {
       } else if (data[i][4][3]) {
         row.push(data[i][4][3]);
       }
-    } else if (data[i][6]) {
-      if (data[i][6][1]) {
-        row.push(data[i][6][1] / 100);
-      }
+    } else if (data[i][3]) {
+      row.push(data[i][3]);
     }
 
     values.push(row);
