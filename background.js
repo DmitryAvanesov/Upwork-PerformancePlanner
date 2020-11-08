@@ -3,24 +3,33 @@ window.addEventListener("load", onLoad);
 
 // handling the input JSON
 let interceptedJSON;
-// controller 
-chrome.runtime.onMessage.addListener(function (
-  request,
-  _sender,
-  _sendResponse
-) {
+
+// controller
+chrome.runtime.onMessage.addListener(function (request, _sender, sendResponse) {
   console.log(request);
   if (request.message === "TRANSFORM_JSON") {
     transformJSON(request.data);
   } else if (request.message === "FORMAT_JSON") {
     formatJSON(request.data);
-  } else if (request.message === "INTERCEPT_JSON") {
-    interceptedJSON = request.data;
   } else if (request.message === "TRANSFORM_CHART") {
-    transformJSON(interceptedJSON);
+    if (interceptedJSON) {
+      transformJSON(interceptedJSON);
+    } else {
+      sendResponse({ message: "There's no chart to get JSON from" });
+    }
   }
 });
 
+// controller for request intercepting
+chrome.runtime.onMessageExternal.addListener(function (
+  request,
+  _sender,
+  _sendResponse
+) {
+  if (request.message === "INTERCEPT_JSON") {
+    interceptedJSON = request.data;
+  }
+});
 
 chrome.runtime.onInstalled.addListener(function () {
   // interacting with the popup
@@ -239,7 +248,7 @@ function drawChart(data, spreadsheetId, sheet) {
       spreadsheetId: spreadsheetId,
       resource: RESOURCE,
     })
-    .then(function () { });
+    .then(function () {});
 }
 
 function formatJSON(data) {
@@ -340,26 +349,3 @@ function getPath(object, path, resultObj) {
 
   return resultObj;
 }
-
-// when the gapi script is loaded, authorize the user
-window.addEventListener("load", onLoad);
-
-// handling the input JSON
-let interceptedJSON;
-// controller 
-chrome.runtime.onMessage.addListener(function (
-  request,
-  _sender,
-  _sendResponse
-) {
-  console.log(request);
-  if (request.message === "TRANSFORM_JSON") {
-    transformJSON(request.data);
-  } else if (request.message === "FORMAT_JSON") {
-    formatJSON(request.data);
-  } else if (request.message === "INTERCEPT_JSON") {
-    interceptedJSON = request.data;
-  } else if (request.message === "TRANSFORM_CHART") {
-    transformJSON(interceptedJSON);
-  }
-});
