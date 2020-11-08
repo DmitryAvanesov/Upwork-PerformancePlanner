@@ -16,6 +16,8 @@ chrome.runtime.onMessage.addListener(function (
     formatJSON(request.data);
   } else if (request.message === "INTERCEPT_JSON") {
     interceptedJSON = request.data;
+  } else if (request.message === "TRANSFORM_CHART") {
+    transformJSON(interceptedJSON);
   }
 });
 
