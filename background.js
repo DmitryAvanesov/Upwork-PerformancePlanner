@@ -1,3 +1,25 @@
+// when the gapi script is loaded, authorize the user
+window.addEventListener("load", onLoad);
+
+// handling the input JSON
+let interceptedJSON;
+// controller 
+chrome.runtime.onMessage.addListener(function (
+  request,
+  _sender,
+  _sendResponse
+) {
+  console.log(request);
+  if (request.message === "TRANSFORM_JSON") {
+    transformJSON(request.data);
+  } else if (request.message === "FORMAT_JSON") {
+    formatJSON(request.data);
+  } else if (request.message === "INTERCEPT_JSON") {
+    interceptedJSON = request.data;
+  }
+});
+
+
 chrome.runtime.onInstalled.addListener(function () {
   // interacting with the popup
   chrome.declarativeContent.onPageChanged.removeRules(undefined, function () {
@@ -215,7 +237,7 @@ function drawChart(data, spreadsheetId, sheet) {
       spreadsheetId: spreadsheetId,
       resource: RESOURCE,
     })
-    .then(function () {});
+    .then(function () { });
 }
 
 function formatJSON(data) {
@@ -316,43 +338,3 @@ function getPath(object, path, resultObj) {
 
   return resultObj;
 }
-
-// when the gapi script is loaded, authorize the user
-window.addEventListener("load", onLoad);
-
-// handling the input JSON
-chrome.runtime.onMessage.addListener(function (
-  request,
-  _sender,
-  _sendResponse
-) {
-  if (request.message === "TRANSFORM_JSON") {
-    transformJSON(request.data);
-  } else if (request.message === "FORMAT_JSON") {
-    formatJSON(request.data);
-  }
-});
-
-let interceptedJSON;
-
-// handling the JSON from response
-chrome.runtime.onMessageExternal.addListener(function (
-  request,
-  _sender,
-  _sendResponse
-) {
-  if (request.message === "INTERCEPT_JSON") {
-    interceptedJSON = request.data;
-  }
-});
-
-// handling the JSON intercepted from response
-chrome.runtime.onMessage.addListener(function (
-  request,
-  _sender,
-  _sendResponse
-) {
-  if (request.message === "TRANSFORM_CHART") {
-    transformJSON(interceptedJSON);
-  }
-});
