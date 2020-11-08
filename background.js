@@ -335,12 +335,26 @@ chrome.runtime.onMessage.addListener(function (
   }
 });
 
+let interceptedJSON;
+
+// handling the JSON from response
 chrome.runtime.onMessageExternal.addListener(function (
   request,
   _sender,
   _sendResponse
 ) {
   if (request.message === "INTERCEPT_JSON") {
-    transformJSON(request.data);
+    interceptedJSON = request.data;
+  }
+});
+
+// handling the JSON intercepted from response
+chrome.runtime.onMessage.addListener(function (
+  request,
+  _sender,
+  _sendResponse
+) {
+  if (request.message === "TRANSFORM_CHART") {
+    transformJSON(interceptedJSON);
   }
 });
