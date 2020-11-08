@@ -12,5 +12,4 @@ formatButton.addEventListener("click", function () {
   const jsonTextarea = document.querySelector(".json-textarea");
   const json = JSON.parse(jsonTextarea.value);
   chrome.runtime.sendMessage({ message: "FORMAT_JSON", data: json });
-})
-};
+});

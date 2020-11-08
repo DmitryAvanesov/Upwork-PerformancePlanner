@@ -41,23 +41,29 @@ function onLoad() {
   });
 }
 
-function handleJSON(data) {
+function transformJSON(data) {
   const SPREADSHEET_ID = "1KZJiwBaSZ-jIASS0j7b62NkanW1WWdP7OHjdu_qbJjk";
 
-  // accessing the list of sheets
-  gapi.client.sheets.spreadsheets
-    .get({ spreadsheetId: SPREADSHEET_ID })
-    .then(function (response) {
-      addSheet(response, data, SPREADSHEET_ID);
+  getSpreadsheet(SPREADSHEET_ID).then(function (spreadsheet) {
+    addSheet(spreadsheet).then(function (addSheetResponse) {
+      const sheet = addSheetResponse.result.replies[0].addSheet.properties;
+
+      writeTransformedData(data, SPREADSHEET_ID, sheet).then(function () {
+        drawChart(data, SPREADSHEET_ID, sheet);
+      });
     });
+  });
 }
 
-function addSheet(spreadsheet, data, spreadsheetId) {
-  const { sheets } = spreadsheet.result;
+function getSpreadsheet(spreadsheetId) {
+  return gapi.client.sheets.spreadsheets.get({ spreadsheetId: spreadsheetId });
+}
 
-  // calculating the next sheet ID
+function addSheet(spreadsheet) {
+  const { sheets, spreadsheetId } = spreadsheet.result;
+
   const nextSheetNumber =
-    sheets.reduce((previousValue, currentValue) => {
+    sheets.reduce(function (previousValue, currentValue) {
       const title = currentValue.properties.title;
 
       return isNaN(title) || parseInt(title) > previousValue
@@ -77,23 +83,13 @@ function addSheet(spreadsheet, data, spreadsheetId) {
     ],
   };
 
-  // adding the next sheet
-  gapi.client.sheets.spreadsheets
-    .batchUpdate({
-      spreadsheetId: spreadsheetId,
-      resource: RESOURCE,
-    })
-    .then(function (response) {
-      console.log(response);
-      writeData(
-        data,
-        spreadsheetId,
-        response.result.replies[0].addSheet.properties
-      );
-    });
+  return gapi.client.sheets.spreadsheets.batchUpdate({
+    spreadsheetId: spreadsheetId,
+    resource: RESOURCE,
+  });
 }
 
-function writeData(data, spreadsheetId, sheet) {
+function writeTransformedData(data, spreadsheetId, sheet) {
   const RANGE = `${sheet.title}!A2:B${data.length}`;
   const VALUE_INPUT_OPTION = "USER_ENTERED";
   const values = [];
@@ -123,18 +119,8 @@ function writeData(data, spreadsheetId, sheet) {
     values,
   };
 
-  // writing the data into the new sheet
-  gapi.client.sheets.spreadsheets.values
-    .update({
-      spreadsheetId: spreadsheetId,
-      range: RANGE,
-      valueInputOption: VALUE_INPUT_OPTION,
-      resource: BODY,
-    })
-    .then(function () {});
-
-  // adding columns' headings
-  gapi.client.sheets.spreadsheets.values
+  // writing the columns' headings
+  return gapi.client.sheets.spreadsheets.values
     .update({
       spreadsheetId: spreadsheetId,
       range: `${sheet.title}!A1:B1`,
@@ -142,7 +128,13 @@ function writeData(data, spreadsheetId, sheet) {
       resource: { values: [["spend", "rev"]] },
     })
     .then(function () {
-      drawChart(data, spreadsheetId, sheet);
+      // writing the values
+      return gapi.client.sheets.spreadsheets.values.update({
+        spreadsheetId: spreadsheetId,
+        range: RANGE,
+        valueInputOption: VALUE_INPUT_OPTION,
+        resource: BODY,
+      });
     });
 }
 
@@ -230,10 +222,22 @@ function drawChart(data, spreadsheetId, sheet) {
 
 function formatJSON(data) {
   const SPREADSHEET_ID = "1KZJiwBaSZ-jIASS0j7b62NkanW1WWdP7OHjdu_qbJjk";
-  const VALUE_INPUT_OPTION = "RAW";
 
+  getSpreadsheet(SPREADSHEET_ID).then(function (spreadsheet) {
+    addSheet(spreadsheet).then(function (addSheetResponse) {
+      writeFormattedData(
+        data,
+        SPREADSHEET_ID,
+        addSheetResponse.result.replies[0].addSheet.properties
+      );
+    });
+  });
+}
+
+function writeFormattedData(data, spreadsheetId, sheet) {
   const result = getPath(data, "", []);
   const formattedArray = [];
+  const values = [];
 
   for (const el of result) {
     const elSplit = el.split("/");
@@ -244,102 +248,58 @@ function formatJSON(data) {
     });
   }
 
-  // accessing the list of sheets
-  gapi.client.sheets.spreadsheets
-    .get({ spreadsheetId: SPREADSHEET_ID })
-    .then(function (response) {
-      const { sheets } = response.result;
+  for (let i = 1; i < formattedArray.length; i++) {
+    const row = [];
+    row.push(formattedArray[i].key);
+    row.push(formattedArray[i].value);
+    values.push(row);
+  }
 
-      // calculating the next sheet ID
-      const nextSheetId =
-        sheets.reduce((previousValue, currentValue) => {
-          const title = currentValue.properties.title;
+  const BODY = {
+    values,
+  };
 
-          return isNaN(title) || parseInt(title) > previousValue
-            ? parseInt(title)
-            : previousValue;
-        }, 1) + 1;
+  const RANGE = `${sheet.title}!A2:B${formattedArray.length}`;
+  const VALUE_INPUT_OPTION = "RAW";
 
-      const RESOURCE = {
-        requests: [
-          {
-            addSheet: {
-              properties: {
-                title: nextSheetId.toString(),
-              },
-            },
-          },
-        ],
-      };
-
-      // adding the next sheet
-      gapi.client.sheets.spreadsheets
-        .batchUpdate({
-          spreadsheetId: SPREADSHEET_ID,
-          resource: RESOURCE,
+  // writing the columns' headings
+  return gapi.client.sheets.spreadsheets.values
+    .update({
+      spreadsheetId: spreadsheetId,
+      range: `${sheet.title}!A1:B1`,
+      valueInputOption: VALUE_INPUT_OPTION,
+      resource: { values: [["key", "value"]] },
+    })
+    .then(function () {
+      // writing the values
+      return gapi.client.sheets.spreadsheets.values
+        .update({
+          spreadsheetId: spreadsheetId,
+          range: RANGE,
+          valueInputOption: VALUE_INPUT_OPTION,
+          resource: BODY,
         })
-        .then(function (response) {
-          const RANGE = `${nextSheetId}!A2:B${formattedArray.length}`;
-          const sheet = response.result.replies[0].addSheet.properties;
-          const values = [];
-
-          for (let i = 1; i < formattedArray.length; i++) {
-            const row = [];
-            row.push(formattedArray[i].key);
-            row.push(formattedArray[i].value);
-            values.push(row);
-          }
-
-          const BODY = {
-            values,
+        .then(function () {
+          const RESOURCE = {
+            requests: [
+              {
+                autoResizeDimensions: {
+                  dimensions: {
+                    sheetId: sheet.sheetId,
+                    dimension: "COLUMNS",
+                    startIndex: 0,
+                    endIndex: 2,
+                  },
+                },
+              },
+            ],
           };
 
-          // writing the data into the new sheet
-          gapi.client.sheets.spreadsheets.values
-            .update({
-              spreadsheetId: SPREADSHEET_ID,
-              range: RANGE,
-              valueInputOption: VALUE_INPUT_OPTION,
-              resource: BODY,
-            })
-            .then((response) => {
-              const result = response.result;
-              console.log(`${result.updatedCells} cells updated.`);
-            });
-
-          // adding columns' headings
-          gapi.client.sheets.spreadsheets.values
-            .update({
-              spreadsheetId: SPREADSHEET_ID,
-              range: `${nextSheetId}!A1:B1`,
-              valueInputOption: VALUE_INPUT_OPTION,
-              resource: { values: [["key", "value"]] },
-            })
-            .then(() => {
-              // auto resize dimensions
-
-              const RESOURCE_AUTO_RESIZE_DIMENSIONS = {
-                requests: [
-                  {
-                    autoResizeDimensions: {
-                      dimensions: {
-                        sheetId: sheet.sheetId,
-                        dimension: "COLUMNS",
-                        startIndex: 0,
-                        endIndex: 2,
-                      },
-                    },
-                  },
-                ],
-              };
-
-              gapi.client.sheets.spreadsheets
-                .batchUpdate({
-                  spreadsheetId: SPREADSHEET_ID,
-                  resource: RESOURCE_AUTO_RESIZE_DIMENSIONS,
-                })
-                .then(function () {});
-            });
+          // applying auto columns' width
+          return gapi.client.sheets.spreadsheets.batchUpdate({
+            spreadsheetId: spreadsheetId,
+            resource: RESOURCE,
+          });
         });
     });
 }
