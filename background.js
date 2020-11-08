@@ -248,7 +248,7 @@ function formatJSON(data) {
                   spreadsheetId: SPREADSHEET_ID,
                   resource: RESOURCE_AUTO_RESIZE_DIMENSIONS,
                 })
-                .then(function () {});
+                .then(function () { });
             });
         });
     });
