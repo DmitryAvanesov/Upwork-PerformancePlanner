@@ -16,5 +16,9 @@ formatButton.addEventListener("click", function () {
 });
 
 transformChartButton.addEventListener("click", function () {
-  chrome.runtime.sendMessage({ message: "TRANSFORM_CHART" });
+  chrome.runtime.sendMessage({ message: "TRANSFORM_CHART" }, function (
+    response
+  ) {
+    alert(response.message);
+  });
 });

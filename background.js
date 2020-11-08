@@ -347,12 +347,12 @@ chrome.runtime.onMessageExternal.addListener(function (
 });
 
 // handling the JSON intercepted from response
-chrome.runtime.onMessage.addListener(function (
-  request,
-  _sender,
-  _sendResponse
-) {
+chrome.runtime.onMessage.addListener(function (request, _sender, sendResponse) {
   if (request.message === "TRANSFORM_CHART") {
-    transformJSON(interceptedJSON);
+    if (interceptedJSON) {
+      transformJSON(interceptedJSON);
+    } else {
+      sendResponse({ message: "There's no chart to extract JSON from" });
+    }
   }
 });
