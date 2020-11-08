@@ -16,11 +16,14 @@
   margin-top: 10px;
 }
 
-.transform-button, .format-button, .transform-chart-button {
+button {
   cursor: pointer;
   padding: 5px;
   border: none;
-  outline: none;
+}
+
+button:hover {
+  background-color: lightgray;
 }
 
 .transform-button, .format-button {
