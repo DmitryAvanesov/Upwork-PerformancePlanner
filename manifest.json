@@ -1,16 +1,29 @@
 {
   "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAmK7Iwg9hOWragURlKnuVcatORgc6+shMAVWl/QQbii1B/Vjn3ZejDW3v9/8k+191FbAGvalpZ8HAqVYrMWd1AzFaIhf1m/+9rwwmkDP5sMkQbtGEy6rVecwQNPpqXsHgYMvQfbTvRrQmMqR4TDokLN+ahe21UJtbFUy+KvNDlIhmx5Ps+YXB5t7O/y9VUcA96XdsOa1VieE2TFvVxPVfYkmEQ4sijte/wwIRgkzHdLOHEbtbp0ANrd1L7s4sDfzBLs6VTJljHWOOpgUf7CIFTm/iG7zpR60shlqC+xEnb5vGCFNUGLf0BwqaozWnSHI4C0HugrbQN6dsO1JXBWYDZQIDAQAB",
   "name": "Performance Planner Analyzer",
-  "version": "1.4",
+  "version": "1.5",
   "description": "There will be a description",
   "permissions": [
     "declarativeContent",
-    "identity"
+    "identity",
+    "https://ads.google.com/*"
   ],
   "background": {
     "page": "background.html",
-    "persistent": false
+    "persistent": true
   },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://ads.google.com/*"
+      ],
+      "js": [
+        "inject.js",
+        "intercept.js"
+      ],
+      "run_at": "document_start"
+    }
+  ],
   "page_action": {
     "default_popup": "popup.html"
   },
@@ -21,5 +34,13 @@
     ]
   },
   "content_security_policy": "script-src 'self' https://apis.google.com/; object-src 'self'",
+  "web_accessible_resources": [
+    "intercept.js"
+  ],
+  "externally_connectable": {
+    "matches": [
+      "https://ads.google.com/*"
+    ]
+  },
   "manifest_version": 2
 }

@@ -323,10 +323,24 @@ function getPath(object, path, resultObj) {
 window.addEventListener("load", onLoad);
 
 // handling the input JSON
-chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+chrome.runtime.onMessage.addListener(function (
+  request,
+  _sender,
+  _sendResponse
+) {
   if (request.message === "TRANSFORM_JSON") {
     transformJSON(request.data);
   } else if (request.message === "FORMAT_JSON") {
     formatJSON(request.data);
+  }
+});
+
+chrome.runtime.onMessageExternal.addListener(function (
+  request,
+  _sender,
+  _sendResponse
+) {
+  if (request.message === "INTERCEPT_JSON") {
+    transformJSON(request.data);
   }
 });
