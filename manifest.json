@@ -9,7 +9,7 @@
     "https://ads.google.com/*"
   ],
   "background": {
-    "page": "background.html",
+    "page": "background/background.html",
     "persistent": true
   },
   "content_scripts": [
@@ -18,14 +18,14 @@
         "https://ads.google.com/*"
       ],
       "js": [
-        "inject.js",
-        "intercept.js"
+        "content/inject.js",
+        "content/intercept.js"
       ],
       "run_at": "document_start"
     }
   ],
   "page_action": {
-    "default_popup": "popup.html"
+    "default_popup": "popup/popup.html"
   },
   "oauth2": {
     "client_id": "830407752509-qtgnjs8tde5o0nr1bjh19bvtpv2hn3g1.apps.googleusercontent.com",
@@ -35,7 +35,7 @@
   },
   "content_security_policy": "script-src 'self' https://apis.google.com/; object-src 'self'",
   "web_accessible_resources": [
-    "intercept.js"
+    "content/intercept.js"
   ],
   "externally_connectable": {
     "matches": [
