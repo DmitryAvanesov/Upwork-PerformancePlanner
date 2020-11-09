@@ -1,7 +1,7 @@
 {
   "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAmK7Iwg9hOWragURlKnuVcatORgc6+shMAVWl/QQbii1B/Vjn3ZejDW3v9/8k+191FbAGvalpZ8HAqVYrMWd1AzFaIhf1m/+9rwwmkDP5sMkQbtGEy6rVecwQNPpqXsHgYMvQfbTvRrQmMqR4TDokLN+ahe21UJtbFUy+KvNDlIhmx5Ps+YXB5t7O/y9VUcA96XdsOa1VieE2TFvVxPVfYkmEQ4sijte/wwIRgkzHdLOHEbtbp0ANrd1L7s4sDfzBLs6VTJljHWOOpgUf7CIFTm/iG7zpR60shlqC+xEnb5vGCFNUGLf0BwqaozWnSHI4C0HugrbQN6dsO1JXBWYDZQIDAQAB",
   "name": "Performance Planner Analyzer",
-  "version": "1.6",
+  "version": "1.7",
   "description": "There will be a description",
   "permissions": [
     "declarativeContent",

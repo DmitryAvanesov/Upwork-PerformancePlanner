@@ -6,7 +6,6 @@ let interceptedJSON;
 
 // controller
 chrome.runtime.onMessage.addListener(function (request, _sender, sendResponse) {
-  console.log(request);
   if (request.message === "TRANSFORM_JSON") {
     transformJSON(request.data);
   } else if (request.message === "FORMAT_JSON") {
