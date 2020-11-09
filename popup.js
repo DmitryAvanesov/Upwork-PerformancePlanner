@@ -5,8 +5,7 @@ const transformChartButton = document.querySelector(".transform-chart-button");
 transformButton.addEventListener("click", function () {
   const jsonTextarea = document.querySelector(".json-textarea");
   const json = JSON.parse(jsonTextarea.value);
-  const targetData = json[2][6][0][2][1];
-  chrome.runtime.sendMessage({ message: "TRANSFORM_JSON", data: targetData });
+  chrome.runtime.sendMessage({ message: "TRANSFORM_JSON", data: json });
 });
 
 formatButton.addEventListener("click", function () {

@@ -123,24 +123,26 @@ function addSheet(spreadsheet) {
 }
 
 function writeTransformedData(data, spreadsheetId, sheet) {
-  const RANGE = `${sheet.title}!A2:B${data.length}`;
-  const VALUE_INPUT_OPTION = "USER_ENTERED";
+  const targetData = data[2][6][0][2][1];
   const values = [];
 
-  for (let i = 1; i < data.length; i++) {
-    const row = [];
-    row.push(data[i][1][3]);
+  const RANGE = `${sheet.title}!A2:B${targetData.length}`;
+  const VALUE_INPUT_OPTION = "USER_ENTERED";
 
-    if (data[i][4]) {
-      if (data[i][4][1]) {
-        row.push(data[i][4][1] / 1000000);
-      } else if (data[i][4][2]) {
-        row.push(data[i][4][2] / 100);
-      } else if (data[i][4][3]) {
-        row.push(data[i][4][3]);
+  for (let i = 1; i < targetData.length; i++) {
+    const row = [];
+    row.push(targetData[i][1][3]);
+
+    if (targetData[i][4]) {
+      if (targetData[i][4][1]) {
+        row.push(targetData[i][4][1] / 1000000);
+      } else if (targetData[i][4][2]) {
+        row.push(targetData[i][4][2] / 100);
+      } else if (targetData[i][4][3]) {
+        row.push(targetData[i][4][3]);
       }
-    } else if (data[i][3]) {
-      row.push(data[i][3]);
+    } else if (targetData[i][3]) {
+      row.push(targetData[i][3]);
     }
 
     values.push(row);
