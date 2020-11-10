@@ -13,11 +13,3 @@ formatButton.addEventListener("click", function () {
   const json = JSON.parse(jsonTextarea.value);
   chrome.runtime.sendMessage({ message: "FORMAT_JSON", data: json });
 });
-
-transformChartButton.addEventListener("click", function () {
-  chrome.runtime.sendMessage({ message: "TRANSFORM_CHART" }, function (
-    response
-  ) {
-    alert(response.message);
-  });
-});

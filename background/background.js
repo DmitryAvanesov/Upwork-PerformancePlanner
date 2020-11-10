@@ -5,17 +5,15 @@ window.addEventListener("load", onLoad);
 let interceptedJSON;
 
 // controller
-chrome.runtime.onMessage.addListener(function (request, _sender, sendResponse) {
+chrome.runtime.onMessage.addListener(function (
+  request,
+  _sender,
+  _sendResponse
+) {
   if (request.message === "TRANSFORM_JSON") {
     transformJSON(request.data);
   } else if (request.message === "FORMAT_JSON") {
     formatJSON(request.data);
-  } else if (request.message === "TRANSFORM_CHART") {
-    if (interceptedJSON) {
-      transformJSON(interceptedJSON);
-    } else {
-      sendResponse({ message: "There's no chart to get JSON from" });
-    }
   }
 });
 
@@ -26,7 +24,7 @@ chrome.runtime.onMessageExternal.addListener(function (
   _sendResponse
 ) {
   if (request.message === "INTERCEPT_JSON") {
-    interceptedJSON = request.data;
+    transformJSON(request.data);
   }
 });
 
@@ -74,21 +72,26 @@ function onLoad() {
 }
 
 function transformJSON(data) {
-  const SPREADSHEET_ID = "1KZJiwBaSZ-jIASS0j7b62NkanW1WWdP7OHjdu_qbJjk";
+  createSrpeadsheet().then(function (spreadsheet) {
+    const speadsheetId = spreadsheet.result.spreadsheetId;
+    const speadsheetUrl = spreadsheet.result.spreadsheetUrl;
 
-  getSpreadsheet(SPREADSHEET_ID).then(function (spreadsheet) {
     addSheet(spreadsheet).then(function (addSheetResponse) {
       const sheet = addSheetResponse.result.replies[0].addSheet.properties;
 
-      writeTransformedData(data, SPREADSHEET_ID, sheet).then(function () {
-        drawChart(data, SPREADSHEET_ID, sheet).then(function () {
+      writeTransformedData(data, speadsheetId, sheet).then(function () {
+        drawChart(data, speadsheetId, sheet).then(function () {
           alert(
-            `You can find the tranformed version of the JSON at the sheet #${sheet.title}`
+            `You can find the tranformed version of the JSON in the following spreadsheet: ${speadsheetUrl}`
           );
         });
       });
     });
   });
+}
+
+function createSrpeadsheet() {
+  return gapi.client.sheets.spreadsheets.create();
 }
 
 function getSpreadsheet(spreadsheetId) {
@@ -102,7 +105,7 @@ function addSheet(spreadsheet) {
     sheets.reduce(function (previousValue, currentValue) {
       const title = currentValue.properties.title;
 
-      return isNaN(title) || parseInt(title) > previousValue
+      return !isNaN(title) && parseInt(title) > previousValue
         ? parseInt(title)
         : previousValue;
     }, 1) + 1;
@@ -255,15 +258,16 @@ function drawChart(data, spreadsheetId, sheet) {
 }
 
 function formatJSON(data) {
-  const SPREADSHEET_ID = "1KZJiwBaSZ-jIASS0j7b62NkanW1WWdP7OHjdu_qbJjk";
+  createSrpeadsheet().then(function (spreadsheet) {
+    const speadsheetId = spreadsheet.result.spreadsheetId;
+    const speadsheetUrl = spreadsheet.result.spreadsheetUrl;
 
-  getSpreadsheet(SPREADSHEET_ID).then(function (spreadsheet) {
     addSheet(spreadsheet).then(function (addSheetResponse) {
       const sheet = addSheetResponse.result.replies[0].addSheet.properties;
 
-      writeFormattedData(data, SPREADSHEET_ID, sheet).then(function () {
+      writeFormattedData(data, speadsheetId, sheet).then(function () {
         alert(
-          `You can find the formatted version of the JSON at the sheet #${sheet.title}`
+          `You can find the tranformed version of the JSON in the following spreadsheet: ${speadsheetUrl}`
         );
       });
     });
