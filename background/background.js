@@ -81,7 +81,11 @@ function transformJSON(data) {
       const sheet = addSheetResponse.result.replies[0].addSheet.properties;
 
       writeTransformedData(data, SPREADSHEET_ID, sheet).then(function () {
-        drawChart(data, SPREADSHEET_ID, sheet);
+        drawChart(data, SPREADSHEET_ID, sheet).then(function () {
+          alert(
+            `You can find the tranformed version of the JSON at the sheet #${sheet.title}`
+          );
+        });
       });
     });
   });
@@ -244,12 +248,10 @@ function drawChart(data, spreadsheetId, sheet) {
     ],
   };
 
-  gapi.client.sheets.spreadsheets
-    .batchUpdate({
-      spreadsheetId: spreadsheetId,
-      resource: RESOURCE,
-    })
-    .then(function () {});
+  return gapi.client.sheets.spreadsheets.batchUpdate({
+    spreadsheetId: spreadsheetId,
+    resource: RESOURCE,
+  });
 }
 
 function formatJSON(data) {
@@ -257,11 +259,13 @@ function formatJSON(data) {
 
   getSpreadsheet(SPREADSHEET_ID).then(function (spreadsheet) {
     addSheet(spreadsheet).then(function (addSheetResponse) {
-      writeFormattedData(
-        data,
-        SPREADSHEET_ID,
-        addSheetResponse.result.replies[0].addSheet.properties
-      );
+      const sheet = addSheetResponse.result.replies[0].addSheet.properties;
+
+      writeFormattedData(data, SPREADSHEET_ID, sheet).then(function () {
+        alert(
+          `You can find the formatted version of the JSON at the sheet #${sheet.title}`
+        );
+      });
     });
   });
 }

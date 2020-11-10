@@ -59,8 +59,8 @@
               });
             }
           } catch (err) {
-            alert("Error in responseType try catch");
-            alert(err);
+            console.log("Error in responseType try catch");
+            console.log(err);
           }
         }
       }
