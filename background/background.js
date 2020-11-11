@@ -5,15 +5,16 @@ window.addEventListener("load", onLoad);
 let interceptedJSON;
 
 // controller
-chrome.runtime.onMessage.addListener(function (
-  request,
-  _sender,
-  _sendResponse
-) {
+chrome.runtime.onMessage.addListener(function (request, _sender, sendResponse) {
   if (request.message === "TRANSFORM_JSON") {
-    transformJSON(request.data);
+    transformJSON(request.data, sendResponse);
+    return true;
   } else if (request.message === "FORMAT_JSON") {
-    formatJSON(request.data);
+    formatJSON(request.data, sendResponse);
+    return true;
+  } else if (request.message === "TRANSFORM_INTERCEPTED_JSON") {
+    transformJSON(interceptedJSON, sendResponse);
+    return true;
   }
 });
 
@@ -24,7 +25,7 @@ chrome.runtime.onMessageExternal.addListener(function (
   _sendResponse
 ) {
   if (request.message === "INTERCEPT_JSON") {
-    transformJSON(request.data);
+    interceptedJSON = request.data;
   }
 });
 
@@ -71,7 +72,7 @@ function onLoad() {
   });
 }
 
-function transformJSON(data) {
+function transformJSON(data, sendResponse) {
   createSrpeadsheet().then(function (spreadsheet) {
     const speadsheetId = spreadsheet.result.spreadsheetId;
     const speadsheetUrl = spreadsheet.result.spreadsheetUrl;
@@ -81,9 +82,7 @@ function transformJSON(data) {
 
       writeTransformedData(data, speadsheetId, sheet).then(function () {
         drawChart(data, speadsheetId, sheet).then(function () {
-          alert(
-            `You can find the tranformed version of the JSON in the following spreadsheet: ${speadsheetUrl}`
-          );
+          sendResponse({ message: speadsheetUrl });
         });
       });
     });
@@ -257,7 +256,7 @@ function drawChart(data, spreadsheetId, sheet) {
   });
 }
 
-function formatJSON(data) {
+function formatJSON(data, sendResponse) {
   createSrpeadsheet().then(function (spreadsheet) {
     const speadsheetId = spreadsheet.result.spreadsheetId;
     const speadsheetUrl = spreadsheet.result.spreadsheetUrl;
@@ -266,9 +265,7 @@ function formatJSON(data) {
       const sheet = addSheetResponse.result.replies[0].addSheet.properties;
 
       writeFormattedData(data, speadsheetId, sheet).then(function () {
-        alert(
-          `You can find the tranformed version of the JSON in the following spreadsheet: ${speadsheetUrl}`
-        );
+        sendResponse({ message: speadsheetUrl });
       });
     });
   });
