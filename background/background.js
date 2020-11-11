@@ -76,14 +76,11 @@ function transformJSON(data, sendResponse) {
   createSrpeadsheet().then(function (spreadsheet) {
     const speadsheetId = spreadsheet.result.spreadsheetId;
     const speadsheetUrl = spreadsheet.result.spreadsheetUrl;
+    const sheet = spreadsheet.result.sheets[0].properties;
 
-    addSheet(spreadsheet).then(function (addSheetResponse) {
-      const sheet = addSheetResponse.result.replies[0].addSheet.properties;
-
-      writeTransformedData(data, speadsheetId, sheet).then(function () {
-        drawChart(data, speadsheetId, sheet).then(function () {
-          sendResponse({ message: speadsheetUrl });
-        });
+    writeTransformedData(data, speadsheetId).then(function () {
+      drawChart(data, speadsheetId, sheet).then(function () {
+        sendResponse({ message: speadsheetUrl });
       });
     });
   });
@@ -127,11 +124,11 @@ function addSheet(spreadsheet) {
   });
 }
 
-function writeTransformedData(data, spreadsheetId, sheet) {
+function writeTransformedData(data, spreadsheetId) {
   const targetData = data[2][6][0][2][1];
   const values = [];
 
-  const RANGE = `${sheet.title}!A2:B${targetData.length}`;
+  const RANGE = `A2:B${targetData.length}`;
   const VALUE_INPUT_OPTION = "USER_ENTERED";
 
   for (let i = 1; i < targetData.length; i++) {
@@ -161,7 +158,7 @@ function writeTransformedData(data, spreadsheetId, sheet) {
   return gapi.client.sheets.spreadsheets.values
     .update({
       spreadsheetId: spreadsheetId,
-      range: `${sheet.title}!A1:B1`,
+      range: "A1:B1",
       valueInputOption: VALUE_INPUT_OPTION,
       resource: { values: [["spend", "rev"]] },
     })
@@ -260,13 +257,10 @@ function formatJSON(data, sendResponse) {
   createSrpeadsheet().then(function (spreadsheet) {
     const speadsheetId = spreadsheet.result.spreadsheetId;
     const speadsheetUrl = spreadsheet.result.spreadsheetUrl;
+    const sheet = spreadsheet.result.sheets[0].properties;
 
-    addSheet(spreadsheet).then(function (addSheetResponse) {
-      const sheet = addSheetResponse.result.replies[0].addSheet.properties;
-
-      writeFormattedData(data, speadsheetId, sheet).then(function () {
-        sendResponse({ message: speadsheetUrl });
-      });
+    writeFormattedData(data, speadsheetId, sheet).then(function () {
+      sendResponse({ message: speadsheetUrl });
     });
   });
 }
@@ -296,14 +290,14 @@ function writeFormattedData(data, spreadsheetId, sheet) {
     values,
   };
 
-  const RANGE = `${sheet.title}!A2:B${formattedArray.length}`;
+  const RANGE = `A2:B${formattedArray.length}`;
   const VALUE_INPUT_OPTION = "RAW";
 
   // writing the columns' headings
   return gapi.client.sheets.spreadsheets.values
     .update({
       spreadsheetId: spreadsheetId,
-      range: `${sheet.title}!A1:B1`,
+      range: "A1:B1",
       valueInputOption: VALUE_INPUT_OPTION,
       resource: { values: [["key", "value"]] },
     })
