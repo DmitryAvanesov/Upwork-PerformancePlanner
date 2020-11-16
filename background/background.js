@@ -13,7 +13,11 @@ chrome.runtime.onMessage.addListener(function (request, _sender, sendResponse) {
     formatJSON(request.data, sendResponse);
     return true;
   } else if (request.message === "TRANSFORM_INTERCEPTED_JSON") {
-    transformJSON(interceptedJSON);
+    if (interceptedJSON) {
+      transformJSON(interceptedJSON);
+    } else {
+      alert("There's no data to send");
+    }
     return true;
   }
 });
@@ -36,7 +40,7 @@ chrome.runtime.onInstalled.addListener(function () {
       {
         conditions: [
           new chrome.declarativeContent.PageStateMatcher({
-            pageUrl: { hostEquals: "ads.google.com" },
+            pageUrl: { hostContains: "" },
           }),
         ],
         actions: [new chrome.declarativeContent.ShowPageAction()],
@@ -80,7 +84,11 @@ function transformJSON(data) {
 
     writeTransformedData(data, speadsheetId).then(function () {
       drawChart(data, speadsheetId, sheet).then(function () {
-        openNewWindow(speadsheetUrl);
+        addSheet(spreadsheet).then(function () {
+          writeRawData(data, speadsheetId).then(function () {
+            openNewWindow(speadsheetUrl);
+          });
+        });
       });
     });
   });
@@ -99,23 +107,14 @@ function getSpreadsheet(spreadsheetId) {
 }
 
 function addSheet(spreadsheet) {
-  const { sheets, spreadsheetId } = spreadsheet.result;
-
-  const nextSheetNumber =
-    sheets.reduce(function (previousValue, currentValue) {
-      const title = currentValue.properties.title;
-
-      return !isNaN(title) && parseInt(title) > previousValue
-        ? parseInt(title)
-        : previousValue;
-    }, 1) + 1;
+  const { spreadsheetId } = spreadsheet.result;
 
   const RESOURCE = {
     requests: [
       {
         addSheet: {
           properties: {
-            title: nextSheetNumber.toString(),
+            title: "Sheet2",
           },
         },
       },
@@ -175,6 +174,20 @@ function writeTransformedData(data, spreadsheetId) {
         resource: BODY,
       });
     });
+}
+
+function writeRawData(data, spreadsheetId) {
+  const RANGE = "Sheet2!A1:A1";
+  const VALUE_INPUT_OPTION = "USER_ENTERED";
+  const values = [[JSON.stringify(data)]];
+  const BODY = { values };
+
+  return gapi.client.sheets.spreadsheets.values.update({
+    spreadsheetId: spreadsheetId,
+    range: RANGE,
+    valueInputOption: VALUE_INPUT_OPTION,
+    resource: BODY,
+  });
 }
 
 function drawChart(data, spreadsheetId, sheet) {

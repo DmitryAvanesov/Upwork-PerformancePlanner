@@ -1,28 +1,6 @@
 .container {
-  position: relative;
   width: 300px;
   padding: 10px;
-}
-
-.button-block {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 10px;
-}
-
-button {
-  cursor: pointer;
-  padding: 5px;
-  border: none;
-}
-
-button:hover {
-  background-color: lightgray;
-}
-
-.transform-button,
-.format-button {
-  width: 47.5%;
 }
 
 .transform-chart-button {
@@ -33,6 +11,7 @@ button:hover {
   font-size: 30px;
   padding: 40px;
 }
+
 .transform-chart-button:hover {
   background-color: #174ea6;
 }
