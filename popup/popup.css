@@ -4,11 +4,6 @@
   padding: 10px;
 }
 
-.json-textarea {
-  width: 100%;
-  height: 200px;
-}
-
 .button-block {
   display: flex;
   justify-content: space-between;
@@ -30,21 +25,14 @@ button:hover {
   width: 47.5%;
 }
 
-.divider {
-  border: none;
-  border-top: 1px solid lightgray;
-  margin: 10px 0;
-}
-
 .transform-chart-button {
   display: block;
   width: 100%;
+  background-color: #1a73e8;
+  color: white;
+  font-size: 30px;
+  padding: 40px;
 }
-
-.url-block {
-  margin-top: 25px;
-  height: 50px;
-  padding: 10px 15px;
-  background-color: rgb(239, 239, 239);
-  line-break: anywhere;
+.transform-chart-button:hover {
+  background-color: #174ea6;
 }
