@@ -7,13 +7,13 @@ let interceptedJSON;
 // controller
 chrome.runtime.onMessage.addListener(function (request, _sender, sendResponse) {
   if (request.message === "TRANSFORM_JSON") {
-    transformJSON(request.data, sendResponse);
+    transformJSON(request.data);
     return true;
   } else if (request.message === "FORMAT_JSON") {
     formatJSON(request.data, sendResponse);
     return true;
   } else if (request.message === "TRANSFORM_INTERCEPTED_JSON") {
-    transformJSON(interceptedJSON, sendResponse);
+    transformJSON(interceptedJSON);
     return true;
   }
 });
@@ -72,7 +72,7 @@ function onLoad() {
   });
 }
 
-function transformJSON(data, sendResponse) {
+function transformJSON(data) {
   createSrpeadsheet().then(function (spreadsheet) {
     const speadsheetId = spreadsheet.result.spreadsheetId;
     const speadsheetUrl = spreadsheet.result.spreadsheetUrl;
@@ -80,10 +80,14 @@ function transformJSON(data, sendResponse) {
 
     writeTransformedData(data, speadsheetId).then(function () {
       drawChart(data, speadsheetId, sheet).then(function () {
-        sendResponse({ message: speadsheetUrl });
+        openNewWindow(speadsheetUrl);
       });
     });
   });
+}
+
+function openNewWindow(url) {
+  chrome.windows.create({ url: url });
 }
 
 function createSrpeadsheet() {

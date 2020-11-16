@@ -5,9 +5,6 @@ const urlBlock = document.querySelector(".url-block");
 
 transformChartButton.addEventListener("click", function () {
   chrome.runtime.sendMessage(
-    { message: "TRANSFORM_INTERCEPTED_JSON" },
-    function (response) {
-      urlBlock.innerHTML = response.message;
-    }
+    { message: "TRANSFORM_INTERCEPTED_JSON" }
   );
 });
