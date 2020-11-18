@@ -80,12 +80,13 @@ function transformJSON(data) {
   createSrpeadsheet().then(function (spreadsheet) {
     const speadsheetId = spreadsheet.result.spreadsheetId;
     const speadsheetUrl = spreadsheet.result.spreadsheetUrl;
-    const sheet = spreadsheet.result.sheets[0].properties;
+    const firstSheet = spreadsheet.result.sheets[0].properties;
 
     writeTransformedData(data, speadsheetId).then(function () {
-      drawChart(data, speadsheetId, sheet).then(function () {
-        addSheet(spreadsheet).then(function () {
-          writeRawData(data, speadsheetId).then(function () {
+      drawChart(data, speadsheetId, firstSheet).then(function () {
+        addSheet2(spreadsheet).then(function (res) {
+          const secondSheet = res.result.replies[0].addSheet.properties;
+          writeFormattedData(data, speadsheetId, secondSheet).then(function () {
             openNewWindow(speadsheetUrl);
           });
         });
@@ -106,7 +107,7 @@ function getSpreadsheet(spreadsheetId) {
   return gapi.client.sheets.spreadsheets.get({ spreadsheetId: spreadsheetId });
 }
 
-function addSheet(spreadsheet) {
+function addSheet2(spreadsheet) {
   const { spreadsheetId } = spreadsheet.result;
 
   const RESOURCE = {
@@ -307,14 +308,14 @@ function writeFormattedData(data, spreadsheetId, sheet) {
     values,
   };
 
-  const RANGE = `A2:B${formattedArray.length}`;
+  const RANGE = `Sheet2!A2:B${formattedArray.length}`;
   const VALUE_INPUT_OPTION = "RAW";
 
   // writing the columns' headings
   return gapi.client.sheets.spreadsheets.values
     .update({
       spreadsheetId: spreadsheetId,
-      range: "A1:B1",
+      range: "Sheet2!A1:B1",
       valueInputOption: VALUE_INPUT_OPTION,
       resource: { values: [["key", "value"]] },
     })
