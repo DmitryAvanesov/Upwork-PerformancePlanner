@@ -4,15 +4,167 @@
   <head>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="popup.css" />
+    <link
+      href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+    />
   </head>
 
   <body>
     <div class="container">
-      <button class="transform-chart-button">Send data to Google Sheets</button>
-      <button class="transform-button">TEST</button>
-      <textarea class="textarea"></textarea>
+      <label
+        class="user-input plan-name mdc-text-field mdc-text-field--outlined"
+      >
+        <span class="mdc-notched-outline">
+          <span class="mdc-notched-outline__leading"></span>
+          <span class="mdc-notched-outline__notch">
+            <span class="mdc-floating-label" id="my-label-id">Plan Name</span>
+          </span>
+          <span class="mdc-notched-outline__trailing"></span>
+        </span>
+        <input
+          type="text"
+          class="mdc-text-field__input"
+          aria-labelledby="my-label-id"
+          required
+        />
+      </label>
+
+      <div class="user-input main-metric mdc-select mdc-select--outlined">
+        <div class="mdc-select__anchor" aria-labelledby="outlined-select-label">
+          <span class="mdc-notched-outline">
+            <span class="mdc-notched-outline__leading"></span>
+            <span class="mdc-notched-outline__notch">
+              <span id="outlined-select-label" class="mdc-floating-label"
+                >Main Metric</span
+              >
+            </span>
+            <span class="mdc-notched-outline__trailing"></span>
+          </span>
+          <span class="mdc-select__selected-text-container">
+            <span
+              id="demo-selected-text"
+              class="mdc-select__selected-text"
+            ></span>
+          </span>
+          <span class="mdc-select__dropdown-icon">
+            <svg
+              class="mdc-select__dropdown-icon-graphic"
+              viewBox="7 10 10 5"
+              focusable="false"
+            >
+              <polygon
+                class="mdc-select__dropdown-icon-inactive"
+                stroke="none"
+                fill-rule="evenodd"
+                points="7 10 12 15 17 10"
+              ></polygon>
+              <polygon
+                class="mdc-select__dropdown-icon-active"
+                stroke="none"
+                fill-rule="evenodd"
+                points="7 15 12 10 17 15"
+              ></polygon>
+            </svg>
+          </span>
+        </div>
+
+        <div
+          class="mdc-select__menu mdc-menu mdc-menu-surface mdc-menu-surface--fullwidth"
+        >
+          <ul class="mdc-list">
+            <li
+              class="mdc-list-item mdc-list-item--selected"
+              data-value="conversions"
+            >
+              <span class="mdc-list-item__ripple"></span>
+              <span class="mdc-list-item__text">Conversions</span>
+            </li>
+            <li class="mdc-list-item" data-value="conversion-value">
+              <span class="mdc-list-item__ripple"></span>
+              <span class="mdc-list-item__text">Conversion Value</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="user-input date-range mdc-select mdc-select--outlined">
+        <div class="mdc-select__anchor" aria-labelledby="outlined-select-label">
+          <span class="mdc-notched-outline">
+            <span class="mdc-notched-outline__leading"></span>
+            <span class="mdc-notched-outline__notch">
+              <span id="outlined-select-label" class="mdc-floating-label"
+                >Date Range</span
+              >
+            </span>
+            <span class="mdc-notched-outline__trailing"></span>
+          </span>
+          <span class="mdc-select__selected-text-container">
+            <span
+              id="demo-selected-text"
+              class="mdc-select__selected-text"
+            ></span>
+          </span>
+          <span class="mdc-select__dropdown-icon">
+            <svg
+              class="mdc-select__dropdown-icon-graphic"
+              viewBox="7 10 10 5"
+              focusable="false"
+            >
+              <polygon
+                class="mdc-select__dropdown-icon-inactive"
+                stroke="none"
+                fill-rule="evenodd"
+                points="7 10 12 15 17 10"
+              ></polygon>
+              <polygon
+                class="mdc-select__dropdown-icon-active"
+                stroke="none"
+                fill-rule="evenodd"
+                points="7 15 12 10 17 15"
+              ></polygon>
+            </svg>
+          </span>
+        </div>
+
+        <div
+          class="mdc-select__menu mdc-menu mdc-menu-surface mdc-menu-surface--fullwidth"
+        >
+          <ul class="mdc-list">
+            <li
+              class="mdc-list-item mdc-list-item--selected"
+              data-value="next-week"
+            >
+              <span class="mdc-list-item__ripple"></span>
+              <span class="mdc-list-item__text">Next Week</span>
+            </li>
+            <li class="mdc-list-item" data-value="next-month">
+              <span class="mdc-list-item__ripple"></span>
+              <span class="mdc-list-item__text">Next Month</span>
+            </li>
+            <li class="mdc-list-item" data-value="next-quarter">
+              <span class="mdc-list-item__ripple"></span>
+              <span class="mdc-list-item__text">Next Quarter</span>
+            </li>
+            <li class="mdc-list-item" data-value="other">
+              <span class="mdc-list-item__ripple"></span>
+              <span class="mdc-list-item__text">Other</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <button class="build-plan mdc-button">
+        <div class="mdc-button__ripple"></div>
+        <span class="mdc-button__label">Build Plan</span>
+      </button>
     </div>
 
+    <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
     <script src="popup.js"></script>
   </body>
 </html>

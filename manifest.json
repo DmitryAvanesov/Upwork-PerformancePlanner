@@ -3,15 +3,24 @@
   "name": "Performance Planner Analyzer",
   "version": "1.8",
   "description": "Helps you to transform Google Ads charts into useful pieces of data",
-  "permissions": ["declarativeContent", "identity", "https://ads.google.com/*"],
+  "permissions": [
+    "declarativeContent",
+    "identity",
+    "https://ads.google.com/*"
+  ],
   "background": {
     "page": "background/background.html",
     "persistent": true
   },
   "content_scripts": [
     {
-      "matches": ["https://ads.google.com/*"],
-      "js": ["content/inject.js", "content/intercept.js"],
+      "matches": [
+        "https://ads.google.com/*"
+      ],
+      "js": [
+        "content/inject.js",
+        "content/intercept.js"
+      ],
       "run_at": "document_start"
     }
   ],
@@ -30,12 +39,18 @@
   },
   "oauth2": {
     "client_id": "830407752509-qtgnjs8tde5o0nr1bjh19bvtpv2hn3g1.apps.googleusercontent.com",
-    "scopes": ["https://www.googleapis.com/auth/spreadsheets"]
+    "scopes": [
+      "https://www.googleapis.com/auth/spreadsheets"
+    ]
   },
-  "content_security_policy": "script-src 'self' https://apis.google.com/; object-src 'self'",
-  "web_accessible_resources": ["content/intercept.js"],
+  "content_security_policy": "script-src 'self' https://apis.google.com https://unpkg.com; object-src 'self'",
+  "web_accessible_resources": [
+    "content/intercept.js"
+  ],
   "externally_connectable": {
-    "matches": ["https://ads.google.com/*"]
+    "matches": [
+      "https://ads.google.com/*"
+    ]
   },
   "manifest_version": 2
 }
