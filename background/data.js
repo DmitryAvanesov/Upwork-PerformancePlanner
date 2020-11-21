@@ -1,6 +1,6 @@
 function writeHeadings(spreadsheetId, sheet, parameters) {
   const VALUE_INPUT_OPTION = "USER_ENTERED";
-  let differingHeadings = [];
+  let differingHeadings;
 
   if (parameters.mainMetric === "conversions") {
     differingHeadings = [

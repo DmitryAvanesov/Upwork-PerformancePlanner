@@ -90,39 +90,46 @@ function transformJSON(json, parameters) {
                       res.result.replies[0].addSheet.properties;
                     writeFormattedData(json, spreadsheetId, jsonDataSheet).then(
                       function () {
-                        applyNumberFormat(
+                        drawCharts(
                           json,
                           spreadsheetId,
                           planSheet,
                           parameters
                         ).then(function () {
-                          makeHeadersBold(
+                          applyNumberFormat(
+                            json,
                             spreadsheetId,
                             planSheet,
                             parameters
                           ).then(function () {
-                            setBackgroundColor(
-                              json,
+                            makeHeadersBold(
                               spreadsheetId,
                               planSheet,
                               parameters
                             ).then(function () {
-                              autoResizeColumnsWidth(
+                              setBackgroundColor(
+                                json,
                                 spreadsheetId,
                                 planSheet,
                                 parameters
                               ).then(function () {
                                 autoResizeColumnsWidth(
                                   spreadsheetId,
-                                  jsonDataSheet,
+                                  planSheet,
                                   parameters
                                 ).then(function () {
-                                  hideColumns(
+                                  autoResizeColumnsWidth(
                                     spreadsheetId,
-                                    planSheet,
+                                    jsonDataSheet,
                                     parameters
                                   ).then(function () {
-                                    openNewWindow(speadsheetUrl);
+                                    hideColumns(
+                                      spreadsheetId,
+                                      planSheet,
+                                      parameters
+                                    ).then(function () {
+                                      openNewWindow(speadsheetUrl);
+                                    });
                                   });
                                 });
                               });
