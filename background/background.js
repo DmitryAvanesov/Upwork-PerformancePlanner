@@ -77,45 +77,54 @@ function transformJSON(json, parameters) {
   createSrpeadsheet().then(function (spreadsheet) {
     const spreadsheetId = spreadsheet.result.spreadsheetId;
     const speadsheetUrl = spreadsheet.result.spreadsheetUrl;
-    const firstSheet = spreadsheet.result.sheets[0].properties;
-    writeHeadings(spreadsheetId, firstSheet, parameters).then(function () {
-      writeTransformedData(json, spreadsheetId, firstSheet, parameters).then(
-        function () {
-          addControls(spreadsheetId, firstSheet, parameters).then(function () {
-            addSheet2(spreadsheet).then(function (res) {
-              const secondSheet = res.result.replies[0].addSheet.properties;
-              writeFormattedData(json, spreadsheetId, secondSheet).then(
+    setPlanSheetTitle(spreadsheetId, parameters).then(function (res) {
+      getSpreadsheet(spreadsheetId).then(function (newSpreadsheet) {
+        const planSheet = newSpreadsheet.result.sheets[0].properties;
+        writeHeadings(spreadsheetId, planSheet, parameters).then(function () {
+          writeTransformedData(json, spreadsheetId, planSheet, parameters).then(
+            function () {
+              addControls(spreadsheetId, planSheet, parameters).then(
                 function () {
-                  applyNumberFormat(
-                    json,
-                    spreadsheetId,
-                    firstSheet,
-                    parameters
-                  ).then(function () {
-                    makeHeadersBold(spreadsheetId, firstSheet, parameters).then(
+                  addJSONDataSheet(spreadsheet).then(function (res) {
+                    const jsonDataSheet =
+                      res.result.replies[0].addSheet.properties;
+                    writeFormattedData(json, spreadsheetId, jsonDataSheet).then(
                       function () {
-                        setBackgroundColor(
+                        applyNumberFormat(
                           json,
                           spreadsheetId,
-                          firstSheet,
+                          planSheet,
                           parameters
                         ).then(function () {
-                          autoResizeColumnsWidth(
+                          makeHeadersBold(
                             spreadsheetId,
-                            firstSheet,
+                            planSheet,
                             parameters
                           ).then(function () {
-                            autoResizeColumnsWidth(
+                            setBackgroundColor(
+                              json,
                               spreadsheetId,
-                              secondSheet,
+                              planSheet,
                               parameters
                             ).then(function () {
-                              hideColumns(
+                              autoResizeColumnsWidth(
                                 spreadsheetId,
-                                firstSheet,
+                                planSheet,
                                 parameters
                               ).then(function () {
-                                openNewWindow(speadsheetUrl);
+                                autoResizeColumnsWidth(
+                                  spreadsheetId,
+                                  jsonDataSheet,
+                                  parameters
+                                ).then(function () {
+                                  hideColumns(
+                                    spreadsheetId,
+                                    planSheet,
+                                    parameters
+                                  ).then(function () {
+                                    openNewWindow(speadsheetUrl);
+                                  });
+                                });
                               });
                             });
                           });
@@ -125,10 +134,10 @@ function transformJSON(json, parameters) {
                   });
                 }
               );
-            });
-          });
-        }
-      );
+            }
+          );
+        });
+      });
     });
   });
 }

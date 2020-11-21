@@ -7,10 +7,10 @@ function createSrpeadsheet() {
 }
 
 function getSpreadsheet(spreadsheetId) {
-  return gapi.client.sheets.spreadsheets.get({ spreadsheetId: spreadsheetId });
+  return gapi.client.sheets.spreadsheets.get({ spreadsheetId });
 }
 
-function addSheet2(spreadsheet) {
+function addJSONDataSheet(spreadsheet) {
   const { spreadsheetId } = spreadsheet.result;
 
   const RESOURCE = {
@@ -18,8 +18,29 @@ function addSheet2(spreadsheet) {
       {
         addSheet: {
           properties: {
-            title: "Sheet2",
+            title: "json data",
           },
+        },
+      },
+    ],
+  };
+
+  return gapi.client.sheets.spreadsheets.batchUpdate({
+    spreadsheetId: spreadsheetId,
+    resource: RESOURCE,
+  });
+}
+
+function setPlanSheetTitle(spreadsheetId, parameters) {
+  const RESOURCE = {
+    requests: [
+      {
+        updateSheetProperties: {
+          properties: {
+            index: 0,
+            title: `${parameters.planName} - ${parameters.dateRange}`,
+          },
+          fields: "title",
         },
       },
     ],
