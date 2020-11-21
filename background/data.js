@@ -1,3 +1,42 @@
+function writeHeadings(spreadsheetId, sheet, parameters) {
+  const VALUE_INPUT_OPTION = "USER_ENTERED";
+  let differingHeadings = [];
+
+  if (parameters.mainMetric === "conversions") {
+    differingHeadings = [
+      "CPA ave",
+      "incr conv",
+      "incr cost",
+      "incr CPA",
+      "PperSale",
+      "incr profit",
+    ];
+  } else if (parameters.mainMetric === "conversion value") {
+    differingHeadings = [
+      "ROAS",
+      '="Approx Sales (AOV="&N2&")"',
+      "CPA",
+      "incr cost",
+      "incr rev",
+      "incr sales",
+      "incr CPA",
+      "incr ROAS",
+      "incr profit",
+    ];
+  }
+
+  return gapi.client.sheets.spreadsheets.values.update({
+    spreadsheetId: spreadsheetId,
+    range: `${sheet.title}!A1:${
+      parameters.mainMetric === "conversions" ? "I" : "L"
+    }1`,
+    valueInputOption: VALUE_INPUT_OPTION,
+    resource: {
+      values: [["cost", parameters.mainMetric, ...differingHeadings, "profit"]],
+    },
+  });
+}
+
 function writeTransformedData(data, spreadsheetId, sheet, parameters) {
   const targetData = data[2][6][0][2][1];
   const values = [];
@@ -28,23 +67,12 @@ function writeTransformedData(data, spreadsheetId, sheet, parameters) {
     values,
   };
 
-  // writing the columns' headings
-  return gapi.client.sheets.spreadsheets.values
-    .update({
-      spreadsheetId: spreadsheetId,
-      range: `${sheet.title}!A1:B1`,
-      valueInputOption: VALUE_INPUT_OPTION,
-      resource: { values: [["cost", parameters.mainMetric]] },
-    })
-    .then(function () {
-      // writing the values
-      return gapi.client.sheets.spreadsheets.values.update({
-        spreadsheetId: spreadsheetId,
-        range: RANGE,
-        valueInputOption: VALUE_INPUT_OPTION,
-        resource: BODY,
-      });
-    });
+  return gapi.client.sheets.spreadsheets.values.update({
+    spreadsheetId: spreadsheetId,
+    range: RANGE,
+    valueInputOption: VALUE_INPUT_OPTION,
+    resource: BODY,
+  });
 }
 
 function writeRawData(data, spreadsheetId, sheet) {
@@ -113,35 +141,67 @@ function writeFormattedData(data, spreadsheetId, sheet) {
       resource: { values: [["key", "value"]] },
     })
     .then(function () {
-      // writing the values
-      return gapi.client.sheets.spreadsheets.values
-        .update({
-          spreadsheetId: spreadsheetId,
-          range: RANGE,
-          valueInputOption: VALUE_INPUT_OPTION,
-          resource: BODY,
-        })
-        .then(function () {
-          const RESOURCE = {
-            requests: [
-              {
-                autoResizeDimensions: {
-                  dimensions: {
-                    sheetId: sheet.sheetId,
-                    dimension: "COLUMNS",
-                    startIndex: 0,
-                    endIndex: 2,
-                  },
-                },
-              },
-            ],
-          };
-
-          // applying auto columns' width
-          return gapi.client.sheets.spreadsheets.batchUpdate({
-            spreadsheetId: spreadsheetId,
-            resource: RESOURCE,
-          });
-        });
+      return gapi.client.sheets.spreadsheets.values.update({
+        spreadsheetId: spreadsheetId,
+        range: RANGE,
+        valueInputOption: VALUE_INPUT_OPTION,
+        resource: BODY,
+      });
     });
+}
+
+function addControls(spreadsheetId, sheet, parameters) {
+  const VALUE_INPUT_OPTION = "USER_ENTERED";
+
+  if (parameters.mainMetric === "conversions") {
+    return gapi.client.sheets.spreadsheets.values.update({
+      spreadsheetId: spreadsheetId,
+      range: `${sheet.title}!J1:K1`,
+      valueInputOption: VALUE_INPUT_OPTION,
+      resource: { values: [["BE CPA", 70]] },
+    });
+  }
+
+  if (parameters.mainMetric === "conversion value") {
+    return gapi.client.sheets.spreadsheets.values.update({
+      spreadsheetId: spreadsheetId,
+      range: `${sheet.title}!M1:N4`,
+      valueInputOption: VALUE_INPUT_OPTION,
+      resource: {
+        values: [
+          ["%PM", "10%"],
+          ["AOV", 100],
+          ["", ""],
+          ["BE", "=1/N1"],
+        ],
+      },
+    });
+  }
+}
+
+function autoResizeColumnsWidth(spreadsheetId, sheet, parameters) {
+  const RESOURCE = {
+    requests: [
+      {
+        autoResizeDimensions: {
+          dimensions: {
+            sheetId: sheet.sheetId,
+            dimension: "COLUMNS",
+            startIndex: 0,
+            endIndex:
+              sheet.title === "Sheet2"
+                ? 2
+                : parameters.mainMetric === "conversions"
+                ? 11
+                : 14,
+          },
+        },
+      },
+    ],
+  };
+
+  return gapi.client.sheets.spreadsheets.batchUpdate({
+    spreadsheetId: spreadsheetId,
+    resource: RESOURCE,
+  });
 }

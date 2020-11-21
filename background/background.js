@@ -76,25 +76,37 @@ chrome.runtime.onMessageExternal.addListener(function (
 
 function transformJSON(json, parameters) {
   createSrpeadsheet().then(function (spreadsheet) {
-    const speadsheetId = spreadsheet.result.spreadsheetId;
+    const spreadsheetId = spreadsheet.result.spreadsheetId;
     const speadsheetUrl = spreadsheet.result.spreadsheetUrl;
     const firstSheet = spreadsheet.result.sheets[0].properties;
-
-    writeTransformedData(json, speadsheetId, firstSheet, parameters).then(
-      function () {
-        drawChart(json, speadsheetId, firstSheet).then(function () {
-          addSheet2(spreadsheet).then(function (res) {
-            const secondSheet = res.result.replies[0].addSheet.properties;
-
-            writeFormattedData(json, speadsheetId, secondSheet).then(
-              function () {
-                openNewWindow(speadsheetUrl);
-              }
-            );
+    writeHeadings(spreadsheetId, firstSheet, parameters).then(function () {
+      writeTransformedData(json, spreadsheetId, firstSheet, parameters).then(
+        function () {
+          addControls(spreadsheetId, firstSheet, parameters).then(function () {
+            addSheet2(spreadsheet).then(function (res) {
+              const secondSheet = res.result.replies[0].addSheet.properties;
+              writeFormattedData(json, spreadsheetId, secondSheet).then(
+                function () {
+                  autoResizeColumnsWidth(
+                    spreadsheetId,
+                    firstSheet,
+                    parameters
+                  ).then(function () {
+                    autoResizeColumnsWidth(
+                      spreadsheetId,
+                      secondSheet,
+                      parameters
+                    ).then(function () {
+                      openNewWindow(speadsheetUrl);
+                    });
+                  });
+                }
+              );
+            });
           });
-        });
-      }
-    );
+        }
+      );
+    });
   });
 }
 

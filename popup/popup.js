@@ -21,6 +21,8 @@ buildPlanButton.addEventListener("click", function () {
         dateRange: dateRangeSelect.value,
       },
     });
+  } else {
+    planNameTextField.valid = false;
   }
 });
 
