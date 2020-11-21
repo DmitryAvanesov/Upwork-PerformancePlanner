@@ -37,16 +37,23 @@ function writeHeadings(spreadsheetId, sheet, parameters) {
   });
 }
 
-function writeTransformedData(data, spreadsheetId, sheet, parameters) {
-  const targetData = data[2][6][0][2][1];
+function writeTransformedData(json, spreadsheetId, sheet, parameters) {
+  const targetData = json[2][6][0][2][1];
   const values = [];
 
-  const RANGE = `${sheet.title}!A2:B${targetData.length}`;
+  const RANGE = `${sheet.title}!A2:${
+    parameters.mainMetric === "conversions" ? "I" : "L"
+  }${targetData.length}`;
   const VALUE_INPUT_OPTION = "USER_ENTERED";
 
   for (let i = 1; i < targetData.length; i++) {
     const row = [];
+
+    // cost
+
     row.push(targetData[i][1][3]);
+
+    // revenue
 
     if (targetData[i][4]) {
       if (targetData[i][4][1]) {
@@ -59,6 +66,74 @@ function writeTransformedData(data, spreadsheetId, sheet, parameters) {
     } else if (targetData[i][3]) {
       row.push(targetData[i][3]);
     }
+
+    if (parameters.mainMetric === "conversions") {
+      // CPA ave
+
+      row.push(`=A${i + 1}/B${i + 1}`);
+
+      // incr conv
+
+      row.push(`=B${i + 1}-${i === 1 ? 0 : `B${i}`}`);
+
+      // incr cost
+
+      row.push(`=A${i + 1}-${i === 1 ? 0 : `A${i}`}`);
+
+      // incr CPA
+
+      row.push(`=E${i + 1}/D${i + 1}`);
+
+      // PperSale
+
+      row.push(`=$K$1-F${i + 1}`);
+
+      // incr profit
+
+      row.push(`=G${i + 1}*D${i + 1}`);
+    } else if (parameters.mainMetric === "conversion value") {
+      // ROAS
+
+      row.push(`=B${i + 1}/A${i + 1}`);
+
+      // Approx Sales
+
+      row.push(`=B${i + 1}/$N$2`);
+
+      // CPA
+
+      row.push(`=A${i + 1}/D${i + 1}`);
+
+      // incr cost
+
+      row.push(`=A${i + 1}-${i === 1 ? 0 : `A${i}`}`);
+
+      // incr rev
+
+      row.push(`=B${i + 1}-${i == 1 ? 0 : `B${i}`}`);
+
+      // incr sales
+
+      row.push(`=D${i + 1}-${i == 1 ? 0 : `D${i}`}`);
+
+      // incr CPA
+
+      row.push(`=F${i + 1}/H${i + 1}`);
+
+      // incr ROAS
+
+      row.push(`=G${i + 1}/F${i + 1}`);
+
+      // incr profit
+
+      row.push(`=L${i + 1}-${i == 1 ? 0 : `L${i}`}`);
+    }
+
+    row.push(
+      parameters.mainMetric === "conversions"
+        ? `=H${i + 1}+${i == 1 ? 0 : `I${i}`}`
+        : `=B${i + 1}-$N$4*A${i + 1}`
+    );
 
     values.push(row);
   }
@@ -89,7 +164,7 @@ function writeRawData(data, spreadsheetId, sheet) {
   });
 }
 
-function writeFormattedData(data, spreadsheetId, sheet) {
+function writeFormattedData(json, spreadsheetId, sheet) {
   function getPath(object, path, resultObj) {
     path = path || [];
 
@@ -105,7 +180,7 @@ function writeFormattedData(data, spreadsheetId, sheet) {
     return resultObj;
   }
 
-  const result = getPath(data, "", []);
+  const result = getPath(json, "", []);
   const formattedArray = [];
   const values = [];
 
@@ -132,7 +207,6 @@ function writeFormattedData(data, spreadsheetId, sheet) {
   const RANGE = `${sheet.title}!A2:B${formattedArray.length}`;
   const VALUE_INPUT_OPTION = "RAW";
 
-  // writing the columns' headings
   return gapi.client.sheets.spreadsheets.values
     .update({
       spreadsheetId: spreadsheetId,
@@ -195,6 +269,40 @@ function autoResizeColumnsWidth(spreadsheetId, sheet, parameters) {
                 ? 11
                 : 14,
           },
+        },
+      },
+    ],
+  };
+
+  return gapi.client.sheets.spreadsheets.batchUpdate({
+    spreadsheetId: spreadsheetId,
+    resource: RESOURCE,
+  });
+}
+
+function applyNumberFormat(json, spreadsheetId, sheet, parameters) {
+  const targetData = json[2][6][0][2][1];
+
+  const RESOURCE = {
+    requests: [
+      {
+        repeatCell: {
+          range: {
+            sheetId: sheet.sheetId,
+            startRowIndex: 1,
+            endRowIndex: targetData.length,
+            startColumnIndex: 1,
+            endColumnIndex: parameters.mainMetric === "conversions" ? 9 : 12,
+          },
+          cell: {
+            userEnteredFormat: {
+              numberFormat: {
+                type: "NUMBER",
+                pattern: "#,##0.00",
+              },
+            },
+          },
+          fields: "userEnteredFormat.numberFormat",
         },
       },
     ],

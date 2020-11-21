@@ -50,7 +50,6 @@ let interceptedJSON;
 // controller
 chrome.runtime.onMessage.addListener(function (request, _sender, sendResponse) {
   if (request.message === "TRANSFORM_JSON") {
-    console.log(request.parameters);
     transformJSON(request.json, request.parameters);
     return true;
   } else if (request.message === "TRANSFORM_INTERCEPTED_JSON") {
@@ -87,17 +86,24 @@ function transformJSON(json, parameters) {
               const secondSheet = res.result.replies[0].addSheet.properties;
               writeFormattedData(json, spreadsheetId, secondSheet).then(
                 function () {
-                  autoResizeColumnsWidth(
+                  applyNumberFormat(
+                    json,
                     spreadsheetId,
                     firstSheet,
                     parameters
                   ).then(function () {
                     autoResizeColumnsWidth(
                       spreadsheetId,
-                      secondSheet,
+                      firstSheet,
                       parameters
                     ).then(function () {
-                      openNewWindow(speadsheetUrl);
+                      autoResizeColumnsWidth(
+                        spreadsheetId,
+                        secondSheet,
+                        parameters
+                      ).then(function () {
+                        openNewWindow(speadsheetUrl);
+                      });
                     });
                   });
                 }
