@@ -313,3 +313,137 @@ function applyNumberFormat(json, spreadsheetId, sheet, parameters) {
     resource: RESOURCE,
   });
 }
+
+function hideColumns(spreadsheetId, sheet, parameters) {
+  const RESOURCE = {
+    requests: [
+      {
+        updateDimensionProperties: {
+          range: {
+            sheetId: sheet.sheetId,
+            dimension: "COLUMNS",
+            startIndex: 2,
+            endIndex: parameters.mainMetric === "conversions" ? 8 : 11,
+          },
+          properties: {
+            hiddenByUser: "TRUE",
+          },
+          fields: "hiddenByUser",
+        },
+      },
+    ],
+  };
+
+  return gapi.client.sheets.spreadsheets.batchUpdate({
+    spreadsheetId: spreadsheetId,
+    resource: RESOURCE,
+  });
+}
+
+function makeHeadersBold(spreadsheetId, sheet, parameters) {
+  const RESOURCE = {
+    requests: [
+      {
+        repeatCell: {
+          range: {
+            sheetId: sheet.sheetId,
+            startRowIndex: 0,
+            endRowIndex: 1,
+            startColumnIndex: 0,
+            endColumnIndex: parameters.mainMetric === "conversions" ? 9 : 12,
+          },
+          cell: {
+            userEnteredFormat: {
+              textFormat: {
+                bold: true,
+              },
+            },
+          },
+          fields: "userEnteredFormat.textFormat",
+        },
+      },
+    ],
+  };
+
+  return gapi.client.sheets.spreadsheets.batchUpdate({
+    spreadsheetId: spreadsheetId,
+    resource: RESOURCE,
+  });
+}
+
+function setBackgroundColor(json, spreadsheetId, sheet, parameters) {
+  const targetData = json[2][6][0][2][1];
+
+  const RESOURCE = {
+    requests: [
+      {
+        repeatCell: {
+          range: {
+            sheetId: sheet.sheetId,
+            startRowIndex: 0,
+            endRowIndex: targetData.length,
+            startColumnIndex: 0,
+            endColumnIndex: 2,
+          },
+          cell: {
+            userEnteredFormat: {
+              backgroundColor: {
+                red: 1.0,
+                green: 0.95,
+                blue: 0.8,
+              },
+            },
+          },
+          fields: "userEnteredFormat.backgroundColor",
+        },
+      },
+      {
+        repeatCell: {
+          range: {
+            sheetId: sheet.sheetId,
+            startRowIndex: 0,
+            endRowIndex: targetData.length,
+            startColumnIndex: parameters.mainMetric === "conversions" ? 8 : 11,
+            endColumnIndex: parameters.mainMetric === "conversions" ? 9 : 12,
+          },
+          cell: {
+            userEnteredFormat: {
+              backgroundColor: {
+                red: 0.85,
+                green: 0.92,
+                blue: 0.83,
+              },
+            },
+          },
+          fields: "userEnteredFormat.backgroundColor",
+        },
+      },
+      {
+        repeatCell: {
+          range: {
+            sheetId: sheet.sheetId,
+            startRowIndex: 0,
+            endRowIndex: parameters.mainMetric === "conversions" ? 1 : 4,
+            startColumnIndex: parameters.mainMetric === "conversions" ? 9 : 12,
+            endColumnIndex: parameters.mainMetric === "conversions" ? 11 : 14,
+          },
+          cell: {
+            userEnteredFormat: {
+              backgroundColor: {
+                red: 0.94,
+                green: 0.94,
+                blue: 0.94,
+              },
+            },
+          },
+          fields: "userEnteredFormat.backgroundColor",
+        },
+      },
+    ],
+  };
+
+  return gapi.client.sheets.spreadsheets.batchUpdate({
+    spreadsheetId: spreadsheetId,
+    resource: RESOURCE,
+  });
+}

@@ -92,19 +92,36 @@ function transformJSON(json, parameters) {
                     firstSheet,
                     parameters
                   ).then(function () {
-                    autoResizeColumnsWidth(
-                      spreadsheetId,
-                      firstSheet,
-                      parameters
-                    ).then(function () {
-                      autoResizeColumnsWidth(
-                        spreadsheetId,
-                        secondSheet,
-                        parameters
-                      ).then(function () {
-                        openNewWindow(speadsheetUrl);
-                      });
-                    });
+                    makeHeadersBold(spreadsheetId, firstSheet, parameters).then(
+                      function () {
+                        setBackgroundColor(
+                          json,
+                          spreadsheetId,
+                          firstSheet,
+                          parameters
+                        ).then(function () {
+                          autoResizeColumnsWidth(
+                            spreadsheetId,
+                            firstSheet,
+                            parameters
+                          ).then(function () {
+                            autoResizeColumnsWidth(
+                              spreadsheetId,
+                              secondSheet,
+                              parameters
+                            ).then(function () {
+                              hideColumns(
+                                spreadsheetId,
+                                firstSheet,
+                                parameters
+                              ).then(function () {
+                                openNewWindow(speadsheetUrl);
+                              });
+                            });
+                          });
+                        });
+                      }
+                    );
                   });
                 }
               );
