@@ -1,19 +1,36 @@
-// const transformButton = document.querySelector(".transform-button");
-// const textarea = document.querySelector(".textarea");
-// const transformChartButton = document.querySelector(".transform-chart-button");
+const textarea = document.querySelector(".textarea");
 
-// transformChartButton.addEventListener("click", function () {
-//   chrome.runtime.sendMessage({ message: "TRANSFORM_INTERCEPTED_JSON" });
-// });
+const MDCTextField = mdc.textField.MDCTextField;
+const MDCSelect = mdc.select.MDCSelect;
 
-// transformButton.addEventListener("click", function () {
+const planNameTextField = new MDCTextField(
+  document.querySelector(".plan-name")
+);
+const mainMetricSelect = new MDCSelect(document.querySelector(".main-metric"));
+const dateRangeSelect = new MDCSelect(document.querySelector(".date-range"));
+const buildPlanButton = document.querySelector(".build-plan");
+
+buildPlanButton.addEventListener("click", function () {
+  if (planNameTextField.value) {
+    chrome.runtime.sendMessage({
+      message: "TRANSFORM_JSON",
+      json: JSON.parse(textarea.value),
+      parameters: {
+        planName: planNameTextField.value,
+        mainMetric: mainMetricSelect.value,
+        dateRange: dateRangeSelect.value,
+      },
+    });
+  }
+});
+
+// buildPlanButton.addEventListener("click", function () {
 //   chrome.runtime.sendMessage({
-//     message: "TRANSFORM_JSON",
-//     data: JSON.parse(textarea.value),
+//     message: "TRANSFORM_INTERCEPTED_JSON",
+//     parameters: {
+//       planName: planNameTextField.value,
+//       mainMetric: mainMetricSelect.value,
+//       dateRange: dateRangeSelect.value,
+//     },
 //   });
 // });
-
-mdc.textField.MDCTextField.attachTo(document.querySelector(".plan-name"));
-mdc.select.MDCSelect.attachTo(document.querySelector(".main-metric"));
-mdc.select.MDCSelect.attachTo(document.querySelector(".date-range"));
-mdc.ripple.MDCRipple.attachTo(document.querySelector(".build-plan"));

@@ -27,15 +27,15 @@
   "page_action": {
     "default_popup": "popup/popup.html",
     "default_icon": {
-      "16": "assets/icon16.png",
-      "32": "assets/icon32.png",
-      "128": "assets/icon128.png"
+      "16": "assets/16.png",
+      "32": "assets/32.png",
+      "128": "assets/128.png"
     }
   },
   "icons": {
-    "16": "assets/icon16.png",
-    "32": "assets/icon32.png",
-    "128": "assets/icon128.png"
+    "16": "assets/16.png",
+    "32": "assets/32.png",
+    "128": "assets/128.png"
   },
   "oauth2": {
     "client_id": "830407752509-qtgnjs8tde5o0nr1bjh19bvtpv2hn3g1.apps.googleusercontent.com",
