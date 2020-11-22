@@ -9,6 +9,7 @@ function drawCharts(json, spreadsheetId, sheet, parameters) {
           chart: {
             spec: {
               title: "profit vs cost",
+              hiddenDimensionStrategy: "SHOW_ALL",
               basicChart: {
                 chartType: "LINE",
                 legendPosition: "NO_LEGEND",
@@ -29,7 +30,7 @@ function drawCharts(json, spreadsheetId, sheet, parameters) {
                         sources: [
                           {
                             sheetId: sheet.sheetId,
-                            startRowIndex: 1,
+                            startRowIndex: 0,
                             endRowIndex: targetData.length,
                             startColumnIndex: 0,
                             endColumnIndex: 1,
@@ -46,7 +47,7 @@ function drawCharts(json, spreadsheetId, sheet, parameters) {
                         sources: [
                           {
                             sheetId: sheet.sheetId,
-                            startRowIndex: 1,
+                            startRowIndex: 0,
                             endRowIndex: targetData.length,
                             startColumnIndex: 8,
                             endColumnIndex: 9,
@@ -78,14 +79,15 @@ function drawCharts(json, spreadsheetId, sheet, parameters) {
         addChart: {
           chart: {
             spec: {
-              title: "profit vs cost",
+              title: "profit vs conversions",
+              hiddenDimensionStrategy: "SHOW_ALL",
               basicChart: {
                 chartType: "LINE",
                 legendPosition: "NO_LEGEND",
                 axis: [
                   {
                     position: "BOTTOM_AXIS",
-                    title: "cost",
+                    title: "conversions",
                   },
                   {
                     position: "LEFT_AXIS",
@@ -99,10 +101,10 @@ function drawCharts(json, spreadsheetId, sheet, parameters) {
                         sources: [
                           {
                             sheetId: sheet.sheetId,
-                            startRowIndex: 1,
+                            startRowIndex: 0,
                             endRowIndex: targetData.length,
-                            startColumnIndex: 0,
-                            endColumnIndex: 1,
+                            startColumnIndex: 1,
+                            endColumnIndex: 2,
                           },
                         ],
                       },
@@ -116,7 +118,7 @@ function drawCharts(json, spreadsheetId, sheet, parameters) {
                         sources: [
                           {
                             sheetId: sheet.sheetId,
-                            startRowIndex: 1,
+                            startRowIndex: 0,
                             endRowIndex: targetData.length,
                             startColumnIndex: 8,
                             endColumnIndex: 9,
@@ -135,7 +137,7 @@ function drawCharts(json, spreadsheetId, sheet, parameters) {
                 anchorCell: {
                   sheetId: sheet.sheetId,
                   rowIndex: 1,
-                  columnIndex: 12,
+                  columnIndex: 18,
                 },
                 widthPixels: 500,
                 heightPixels: 300,
@@ -149,6 +151,7 @@ function drawCharts(json, spreadsheetId, sheet, parameters) {
           chart: {
             spec: {
               title: "profit vs CPA ave",
+              hiddenDimensionStrategy: "SHOW_ALL",
               basicChart: {
                 chartType: "LINE",
                 legendPosition: "NO_LEGEND",
@@ -169,7 +172,7 @@ function drawCharts(json, spreadsheetId, sheet, parameters) {
                         sources: [
                           {
                             sheetId: sheet.sheetId,
-                            startRowIndex: 1,
+                            startRowIndex: 0,
                             endRowIndex: targetData.length,
                             startColumnIndex: 2,
                             endColumnIndex: 3,
@@ -186,7 +189,7 @@ function drawCharts(json, spreadsheetId, sheet, parameters) {
                         sources: [
                           {
                             sheetId: sheet.sheetId,
-                            startRowIndex: 1,
+                            startRowIndex: 0,
                             endRowIndex: targetData.length,
                             startColumnIndex: 8,
                             endColumnIndex: 9,
@@ -204,7 +207,7 @@ function drawCharts(json, spreadsheetId, sheet, parameters) {
               overlayPosition: {
                 anchorCell: {
                   sheetId: sheet.sheetId,
-                  rowIndex: 10,
+                  rowIndex: 18,
                   columnIndex: 12,
                 },
                 widthPixels: 500,
@@ -219,6 +222,7 @@ function drawCharts(json, spreadsheetId, sheet, parameters) {
           chart: {
             spec: {
               title: "incr CPA vs CPA ave",
+              hiddenDimensionStrategy: "SHOW_ALL",
               basicChart: {
                 chartType: "LINE",
                 legendPosition: "NO_LEGEND",
@@ -239,7 +243,7 @@ function drawCharts(json, spreadsheetId, sheet, parameters) {
                         sources: [
                           {
                             sheetId: sheet.sheetId,
-                            startRowIndex: 1,
+                            startRowIndex: 0,
                             endRowIndex: targetData.length,
                             startColumnIndex: 2,
                             endColumnIndex: 3,
@@ -256,7 +260,7 @@ function drawCharts(json, spreadsheetId, sheet, parameters) {
                         sources: [
                           {
                             sheetId: sheet.sheetId,
-                            startRowIndex: 1,
+                            startRowIndex: 0,
                             endRowIndex: targetData.length,
                             startColumnIndex: 5,
                             endColumnIndex: 6,
@@ -274,7 +278,7 @@ function drawCharts(json, spreadsheetId, sheet, parameters) {
               overlayPosition: {
                 anchorCell: {
                   sheetId: sheet.sheetId,
-                  rowIndex: 10,
+                  rowIndex: 18,
                   columnIndex: 18,
                 },
                 widthPixels: 500,
@@ -292,6 +296,7 @@ function drawCharts(json, spreadsheetId, sheet, parameters) {
           chart: {
             spec: {
               title: "profit vs cost",
+              hiddenDimensionStrategy: "SHOW_ALL",
               basicChart: {
                 chartType: "LINE",
                 legendPosition: "NO_LEGEND",
@@ -312,7 +317,7 @@ function drawCharts(json, spreadsheetId, sheet, parameters) {
                         sources: [
                           {
                             sheetId: sheet.sheetId,
-                            startRowIndex: 1,
+                            startRowIndex: 0,
                             endRowIndex: targetData.length,
                             startColumnIndex: 0,
                             endColumnIndex: 1,
@@ -329,7 +334,7 @@ function drawCharts(json, spreadsheetId, sheet, parameters) {
                         sources: [
                           {
                             sheetId: sheet.sheetId,
-                            startRowIndex: 1,
+                            startRowIndex: 0,
                             endRowIndex: targetData.length,
                             startColumnIndex: 11,
                             endColumnIndex: 12,
@@ -362,6 +367,7 @@ function drawCharts(json, spreadsheetId, sheet, parameters) {
           chart: {
             spec: {
               title: "Approx Sales vs cost",
+              hiddenDimensionStrategy: "SHOW_ALL",
               basicChart: {
                 chartType: "LINE",
                 legendPosition: "NO_LEGEND",
@@ -382,7 +388,7 @@ function drawCharts(json, spreadsheetId, sheet, parameters) {
                         sources: [
                           {
                             sheetId: sheet.sheetId,
-                            startRowIndex: 1,
+                            startRowIndex: 0,
                             endRowIndex: targetData.length,
                             startColumnIndex: 0,
                             endColumnIndex: 1,
@@ -399,7 +405,7 @@ function drawCharts(json, spreadsheetId, sheet, parameters) {
                         sources: [
                           {
                             sheetId: sheet.sheetId,
-                            startRowIndex: 1,
+                            startRowIndex: 0,
                             endRowIndex: targetData.length,
                             startColumnIndex: 3,
                             endColumnIndex: 4,
@@ -418,7 +424,7 @@ function drawCharts(json, spreadsheetId, sheet, parameters) {
                 anchorCell: {
                   sheetId: sheet.sheetId,
                   rowIndex: 1,
-                  columnIndex: 20,
+                  columnIndex: 21,
                 },
                 widthPixels: 500,
                 heightPixels: 300,
@@ -432,6 +438,7 @@ function drawCharts(json, spreadsheetId, sheet, parameters) {
           chart: {
             spec: {
               title: "profit vs ROAS",
+              hiddenDimensionStrategy: "SHOW_ALL",
               basicChart: {
                 chartType: "LINE",
                 legendPosition: "NO_LEGEND",
@@ -452,7 +459,7 @@ function drawCharts(json, spreadsheetId, sheet, parameters) {
                         sources: [
                           {
                             sheetId: sheet.sheetId,
-                            startRowIndex: 1,
+                            startRowIndex: 0,
                             endRowIndex: targetData.length,
                             startColumnIndex: 2,
                             endColumnIndex: 3,
@@ -469,7 +476,7 @@ function drawCharts(json, spreadsheetId, sheet, parameters) {
                         sources: [
                           {
                             sheetId: sheet.sheetId,
-                            startRowIndex: 1,
+                            startRowIndex: 0,
                             endRowIndex: targetData.length,
                             startColumnIndex: 11,
                             endColumnIndex: 12,
@@ -487,7 +494,7 @@ function drawCharts(json, spreadsheetId, sheet, parameters) {
               overlayPosition: {
                 anchorCell: {
                   sheetId: sheet.sheetId,
-                  rowIndex: 15,
+                  rowIndex: 18,
                   columnIndex: 15,
                 },
                 widthPixels: 500,
@@ -502,6 +509,7 @@ function drawCharts(json, spreadsheetId, sheet, parameters) {
           chart: {
             spec: {
               title: "incr ROAS vs cost",
+              hiddenDimensionStrategy: "SHOW_ALL",
               basicChart: {
                 chartType: "LINE",
                 legendPosition: "NO_LEGEND",
@@ -522,7 +530,7 @@ function drawCharts(json, spreadsheetId, sheet, parameters) {
                         sources: [
                           {
                             sheetId: sheet.sheetId,
-                            startRowIndex: 1,
+                            startRowIndex: 0,
                             endRowIndex: targetData.length,
                             startColumnIndex: 0,
                             endColumnIndex: 1,
@@ -539,7 +547,7 @@ function drawCharts(json, spreadsheetId, sheet, parameters) {
                         sources: [
                           {
                             sheetId: sheet.sheetId,
-                            startRowIndex: 1,
+                            startRowIndex: 0,
                             endRowIndex: targetData.length,
                             startColumnIndex: 9,
                             endColumnIndex: 10,
@@ -557,8 +565,8 @@ function drawCharts(json, spreadsheetId, sheet, parameters) {
               overlayPosition: {
                 anchorCell: {
                   sheetId: sheet.sheetId,
-                  rowIndex: 15,
-                  columnIndex: 20,
+                  rowIndex: 18,
+                  columnIndex: 21,
                 },
                 widthPixels: 500,
                 heightPixels: 300,

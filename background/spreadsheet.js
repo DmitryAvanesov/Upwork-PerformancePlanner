@@ -1,5 +1,5 @@
 function openNewWindow(url) {
-  chrome.windows.create({ url });
+  chrome.tabs.create({ url });
 }
 
 function createSrpeadsheet() {

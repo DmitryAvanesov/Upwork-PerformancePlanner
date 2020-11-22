@@ -1,4 +1,4 @@
-const textarea = document.querySelector(".textarea");
+// const textarea = document.querySelector(".textarea");
 
 const MDCTextField = mdc.textField.MDCTextField;
 const MDCSelect = mdc.select.MDCSelect;
@@ -13,8 +13,7 @@ const buildPlanButton = document.querySelector(".build-plan");
 buildPlanButton.addEventListener("click", function () {
   if (planNameTextField.value) {
     chrome.runtime.sendMessage({
-      message: "TRANSFORM_JSON",
-      json: JSON.parse(textarea.value),
+      message: "TRANSFORM_INTERCEPTED_JSON",
       parameters: {
         planName: planNameTextField.value,
         mainMetric: mainMetricSelect.value,
@@ -25,14 +24,3 @@ buildPlanButton.addEventListener("click", function () {
     planNameTextField.valid = false;
   }
 });
-
-// buildPlanButton.addEventListener("click", function () {
-//   chrome.runtime.sendMessage({
-//     message: "TRANSFORM_INTERCEPTED_JSON",
-//     parameters: {
-//       planName: planNameTextField.value,
-//       mainMetric: mainMetricSelect.value,
-//       dateRange: dateRangeSelect.value,
-//     },
-//   });
-// });
