@@ -4,6 +4,7 @@
   align-items: flex-end;
   width: 300px;
   padding: 25px 10px 15px;
+  position: relative;
 }
 
 .user-input {
@@ -13,4 +14,14 @@
 
 .build-plan {
   float: right;
+}
+
+.progress {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, 0);
+  opacity: 0;
+  z-index: -1;
+  height: 100%;
 }

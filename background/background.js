@@ -72,12 +72,12 @@ chrome.runtime.onMessageExternal.addListener(function (
 });
 
 function transformJSON(json, parameters, sendResponse) {
-  var t0 = performance.now();
-  sendResponse({ message: "red" });
+  sendResponse({ message: "loading" });
 
   createSrpeadsheet().then(function (spreadsheet) {
     const spreadsheetId = spreadsheet.result.spreadsheetId;
     const speadsheetUrl = spreadsheet.result.spreadsheetUrl;
+
     setPlanSheetTitle(spreadsheetId, parameters).then(function () {
       Promise.all([
         getSpreadsheet(spreadsheetId),
@@ -85,6 +85,7 @@ function transformJSON(json, parameters, sendResponse) {
       ]).then(function (values) {
         const planSheet = values[0].result.sheets[0].properties;
         const jsonDataSheet = values[1].result.replies[0].addSheet.properties;
+
         Promise.all([
           Promise.all([
             writeHeadings(spreadsheetId, planSheet, parameters),
@@ -103,12 +104,7 @@ function transformJSON(json, parameters, sendResponse) {
             autoResizeColumnsWidth(spreadsheetId, jsonDataSheet, parameters),
           ]).then(function () {
             openNewWindow(speadsheetUrl);
-            sendResponse({ message: "white" });
-
-            var t1 = performance.now();
-            console.log(
-              "Call took " + ((t1 - t0) / 1000).toFixed(2) + " seconds."
-            );
+            sendResponse({ message: "finished" });
           });
         });
       });
