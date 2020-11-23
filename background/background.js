@@ -1,5 +1,4 @@
 chrome.runtime.onInstalled.addListener(function () {
-  // interacting with the popup
   chrome.declarativeContent.onPageChanged.removeRules(undefined, function () {
     chrome.declarativeContent.onPageChanged.addRules([
       {
@@ -44,17 +43,16 @@ function onLoad() {
   });
 }
 
-// handling the input JSON
 let interceptedJSON;
 
 // controller
 chrome.runtime.onMessage.addListener(function (request, _sender, sendResponse) {
   if (request.message === "TRANSFORM_JSON") {
-    transformJSON(request.json, request.parameters);
+    transformJSON(request.json, request.parameters, sendResponse);
     return true;
   } else if (request.message === "TRANSFORM_INTERCEPTED_JSON") {
     if (interceptedJSON) {
-      transformJSON(interceptedJSON, request.parameters);
+      transformJSON(interceptedJSON, request.parameters, sendResponse);
     } else {
       alert("There's no data to send");
     }
@@ -73,76 +71,45 @@ chrome.runtime.onMessageExternal.addListener(function (
   }
 });
 
-function transformJSON(json, parameters) {
+function transformJSON(json, parameters, sendResponse) {
+  var t0 = performance.now();
+  sendResponse({ message: "red" });
+
   createSrpeadsheet().then(function (spreadsheet) {
     const spreadsheetId = spreadsheet.result.spreadsheetId;
     const speadsheetUrl = spreadsheet.result.spreadsheetUrl;
-    setPlanSheetTitle(spreadsheetId, parameters).then(function (res) {
-      getSpreadsheet(spreadsheetId).then(function (newSpreadsheet) {
-        const planSheet = newSpreadsheet.result.sheets[0].properties;
-        writeHeadings(spreadsheetId, planSheet, parameters).then(function () {
-          writeTransformedData(json, spreadsheetId, planSheet, parameters).then(
-            function () {
-              addControls(spreadsheetId, planSheet, parameters).then(
-                function () {
-                  addJSONDataSheet(spreadsheet).then(function (res) {
-                    const jsonDataSheet =
-                      res.result.replies[0].addSheet.properties;
-                    writeFormattedData(json, spreadsheetId, jsonDataSheet).then(
-                      function () {
-                        drawCharts(
-                          json,
-                          spreadsheetId,
-                          planSheet,
-                          parameters
-                        ).then(function () {
-                          applyNumberFormat(
-                            json,
-                            spreadsheetId,
-                            planSheet,
-                            parameters
-                          ).then(function () {
-                            makeHeadersBold(
-                              spreadsheetId,
-                              planSheet,
-                              parameters
-                            ).then(function () {
-                              setBackgroundColor(
-                                json,
-                                spreadsheetId,
-                                planSheet,
-                                parameters
-                              ).then(function () {
-                                autoResizeColumnsWidth(
-                                  spreadsheetId,
-                                  planSheet,
-                                  parameters
-                                ).then(function () {
-                                  autoResizeColumnsWidth(
-                                    spreadsheetId,
-                                    jsonDataSheet,
-                                    parameters
-                                  ).then(function () {
-                                    hideColumns(
-                                      spreadsheetId,
-                                      planSheet,
-                                      parameters
-                                    ).then(function () {
-                                      openNewWindow(speadsheetUrl);
-                                    });
-                                  });
-                                });
-                              });
-                            });
-                          });
-                        });
-                      }
-                    );
-                  });
-                }
-              );
-            }
-          );
+    setPlanSheetTitle(spreadsheetId, parameters).then(function () {
+      Promise.all([
+        getSpreadsheet(spreadsheetId),
+        addJSONDataSheet(spreadsheet),
+      ]).then(function (values) {
+        const planSheet = values[0].result.sheets[0].properties;
+        const jsonDataSheet = values[1].result.replies[0].addSheet.properties;
+        Promise.all([
+          Promise.all([
+            writeHeadings(spreadsheetId, planSheet, parameters),
+            writeTransformedData(json, spreadsheetId, planSheet, parameters),
+            addControls(spreadsheetId, planSheet, parameters),
+            drawCharts(json, spreadsheetId, planSheet, parameters),
+            applyNumberFormat(json, spreadsheetId, planSheet, parameters),
+            makeHeadersBold(spreadsheetId, planSheet, parameters),
+            setBackgroundColor(json, spreadsheetId, planSheet, parameters),
+            hideColumns(spreadsheetId, planSheet, parameters),
+          ]),
+          writeFormattedData(json, spreadsheetId, jsonDataSheet),
+        ]).then(function () {
+          Promise.all([
+            autoResizeColumnsWidth(spreadsheetId, planSheet, parameters),
+            autoResizeColumnsWidth(spreadsheetId, jsonDataSheet, parameters),
+          ]).then(function () {
+            openNewWindow(speadsheetUrl);
+            sendResponse({ message: "white" });
+
+            var t1 = performance.now();
+            console.log(
+              "Call took " + ((t1 - t0) / 1000).toFixed(2) + " seconds."
+            );
+          });
         });
       });
     });

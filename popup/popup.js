@@ -1,4 +1,4 @@
-// const textarea = document.querySelector(".textarea");
+const textarea = document.querySelector(".textarea");
 
 const MDCTextField = mdc.textField.MDCTextField;
 const MDCSelect = mdc.select.MDCSelect;
@@ -12,15 +12,36 @@ const buildPlanButton = document.querySelector(".build-plan");
 
 buildPlanButton.addEventListener("click", function () {
   if (planNameTextField.value) {
-    chrome.runtime.sendMessage({
-      message: "TRANSFORM_INTERCEPTED_JSON",
-      parameters: {
-        planName: planNameTextField.value,
-        mainMetric: mainMetricSelect.value,
-        dateRange: dateRangeSelect.value,
+    chrome.runtime.sendMessage(
+      {
+        message: "TRANSFORM_JSON",
+        json: JSON.parse(textarea.value),
+        parameters: {
+          planName: planNameTextField.value,
+          mainMetric: mainMetricSelect.value,
+          dateRange: dateRangeSelect.value,
+        },
       },
-    });
+      function (response) {
+        textarea.style.backgroundColor = response.message;
+      }
+    );
   } else {
     planNameTextField.valid = false;
   }
 });
+
+// buildPlanButton.addEventListener("click", function () {
+//   if (planNameTextField.value) {
+//     chrome.runtime.sendMessage({
+//       message: "TRANSFORM_INTERCEPTED_JSON",
+//       parameters: {
+//         planName: planNameTextField.value,
+//         mainMetric: mainMetricSelect.value,
+//         dateRange: dateRangeSelect.value,
+//       },
+//     });
+//   } else {
+//     planNameTextField.valid = false;
+//   }
+// });
