@@ -28,14 +28,22 @@
     "default_popup": "popup/popup.html",
     "default_icon": {
       "16": "assets/16.png",
+      "24": "assets/24.png",
       "32": "assets/32.png",
-      "128": "assets/128.png"
+      "64": "assets/64.png",
+      "128": "assets/128.png",
+      "256": "assets/256.png",
+      "512": "assets/512.png"
     }
   },
   "icons": {
     "16": "assets/16.png",
+    "24": "assets/24.png",
     "32": "assets/32.png",
-    "128": "assets/128.png"
+    "64": "assets/64.png",
+    "128": "assets/128.png",
+    "256": "assets/256.png",
+    "512": "assets/512.png"
   },
   "oauth2": {
     "client_id": "830407752509-qtgnjs8tde5o0nr1bjh19bvtpv2hn3g1.apps.googleusercontent.com",
