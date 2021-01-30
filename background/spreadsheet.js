@@ -2,8 +2,12 @@ function openNewWindow(url) {
   chrome.tabs.create({ url });
 }
 
-function createSrpeadsheet() {
-  return gapi.client.sheets.spreadsheets.create();
+function createSpreadsheet(planName) {
+  return gapi.client.sheets.spreadsheets.create({
+    properties: {
+      title: planName,
+    },
+  });
 }
 
 function getSpreadsheet(spreadsheetId) {

@@ -74,9 +74,9 @@ chrome.runtime.onMessageExternal.addListener(function (
 function transformJSON(json, parameters, sendResponse) {
   sendResponse({ message: "loading" });
 
-  createSrpeadsheet().then(function (spreadsheet) {
+  createSpreadsheet(parameters.planName).then(function (spreadsheet) {
     const spreadsheetId = spreadsheet.result.spreadsheetId;
-    const speadsheetUrl = spreadsheet.result.spreadsheetUrl;
+    const spreadsheetUrl = spreadsheet.result.spreadsheetUrl;
 
     setPlanSheetTitle(spreadsheetId, parameters).then(function () {
       Promise.all([
@@ -103,7 +103,7 @@ function transformJSON(json, parameters, sendResponse) {
             autoResizeColumnsWidth(spreadsheetId, planSheet, parameters),
             autoResizeColumnsWidth(spreadsheetId, jsonDataSheet, parameters),
           ]).then(function () {
-            openNewWindow(speadsheetUrl);
+            openNewWindow(spreadsheetUrl);
             sendResponse({ message: "finished" });
           });
         });
@@ -112,14 +112,14 @@ function transformJSON(json, parameters, sendResponse) {
   });
 }
 
-function formatJSON(data, sendResponse) {
-  createSrpeadsheet().then(function (spreadsheet) {
-    const speadsheetId = spreadsheet.result.spreadsheetId;
-    const speadsheetUrl = spreadsheet.result.spreadsheetUrl;
-    const sheet = spreadsheet.result.sheets[0].properties;
-
-    writeFormattedData(data, speadsheetId, sheet).then(function () {
-      sendResponse({ message: speadsheetUrl });
-    });
-  });
-}
+// function formatJSON(data, sendResponse) {
+//   createSrpeadsheet().then(function (spreadsheet) {
+//     const speadsheetId = spreadsheet.result.spreadsheetId;
+//     const speadsheetUrl = spreadsheet.result.spreadsheetUrl;
+//     const sheet = spreadsheet.result.sheets[0].properties;
+//
+//     writeFormattedData(data, speadsheetId, sheet).then(function () {
+//       sendResponse({ message: speadsheetUrl });
+//     });
+//   });
+// }

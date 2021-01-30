@@ -6,11 +6,8 @@
   const setRequestHeader = XHR.setRequestHeader;
 
   XHR.open = function (method, url) {
-    this._method = method;
     this._url = url;
     this._requestHeaders = {};
-    this._startTime = new Date().toISOString();
-
     return open.apply(this, arguments);
   };
 
@@ -34,16 +31,10 @@
               );
               console.log(err);
             }
-          } else if (
-            typeof postData === "object" ||
-            typeof postData === "array" ||
-            typeof postData === "number" ||
-            typeof postData === "boolean"
-          ) {
           }
         }
 
-        if (this.responseType != "blob" && this.responseText) {
+        if (this.responseType !== "blob" && this.responseText) {
           try {
             const response = this.responseText;
             const extensionId = "loddmfmefacnijdkaphhijbjgapjndgk";

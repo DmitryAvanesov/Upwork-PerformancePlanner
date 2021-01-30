@@ -110,11 +110,11 @@ function writeTransformedData(json, spreadsheetId, sheet, parameters) {
 
       // incr rev
 
-      row.push(`=B${i + 1}-${i == 1 ? 0 : `B${i}`}`);
+      row.push(`=B${i + 1}-${i === 1 ? 0 : `B${i}`}`);
 
       // incr sales
 
-      row.push(`=D${i + 1}-${i == 1 ? 0 : `D${i}`}`);
+      row.push(`=D${i + 1}-${i === 1 ? 0 : `D${i}`}`);
 
       // incr CPA
 
@@ -126,12 +126,12 @@ function writeTransformedData(json, spreadsheetId, sheet, parameters) {
 
       // incr profit
 
-      row.push(`=L${i + 1}-${i == 1 ? 0 : `L${i}`}`);
+      row.push(`=L${i + 1}-${i === 1 ? 0 : `L${i}`}`);
     }
 
     row.push(
       parameters.mainMetric === "conversions"
-        ? `=H${i + 1}+${i == 1 ? 0 : `I${i}`}`
+        ? `=H${i + 1}+${i === 1 ? 0 : `I${i}`}`
         : `=B${i + 1}-$N$4*A${i + 1}`
     );
 
@@ -150,19 +150,19 @@ function writeTransformedData(json, spreadsheetId, sheet, parameters) {
   });
 }
 
-function writeRawData(data, spreadsheetId, sheet) {
-  const RANGE = `${sheet.title}!A1:A1`;
-  const VALUE_INPUT_OPTION = "USER_ENTERED";
-  const values = [[JSON.stringify(data)]];
-  const BODY = { values };
-
-  return gapi.client.sheets.spreadsheets.values.update({
-    spreadsheetId: spreadsheetId,
-    range: RANGE,
-    valueInputOption: VALUE_INPUT_OPTION,
-    resource: BODY,
-  });
-}
+// function writeRawData(data, spreadsheetId, sheet) {
+//     const RANGE = `${sheet.title}!A1:A1`;
+//     const VALUE_INPUT_OPTION = "USER_ENTERED";
+//     const values = [[JSON.stringify(data)]];
+//     const BODY = {values};
+//
+//     return gapi.client.sheets.spreadsheets.values.update({
+//         spreadsheetId: spreadsheetId,
+//         range: RANGE,
+//         valueInputOption: VALUE_INPUT_OPTION,
+//         resource: BODY,
+//     });
+// }
 
 function writeFormattedData(json, spreadsheetId, sheet) {
   function getPath(object, path, resultObj) {

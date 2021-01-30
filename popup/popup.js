@@ -51,11 +51,11 @@ buildPlanButton.addEventListener("click", function () {
       },
       function (response) {
         if (response.message === "loading") {
-          progressImg.style.opacity = 0.5;
-          progressImg.style.zIndex = 0;
+          progressImg.style.opacity = "0.5";
+          progressImg.style.zIndex = "0";
         } else if (response.message === "finished") {
-          progressImg.style.opacity = 0;
-          progressImg.style.zIndex = -1;
+          progressImg.style.opacity = "0";
+          progressImg.style.zIndex = "-1";
         }
       }
     );

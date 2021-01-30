@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<html>
+<html lang="ru">
   <head>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="popup.css" />
@@ -12,6 +12,7 @@
       rel="stylesheet"
       href="https://fonts.googleapis.com/icon?family=Material+Icons"
     />
+    <title>Performance Planner Analyzer</title>
   </head>
 
   <body>
@@ -35,11 +36,16 @@
       </label>
 
       <div class="user-input main-metric mdc-select mdc-select--outlined">
-        <div class="mdc-select__anchor" aria-labelledby="outlined-select-label">
+        <div
+          class="mdc-select__anchor"
+          aria-labelledby="outlined-select-label-main-metric"
+        >
           <span class="mdc-notched-outline">
             <span class="mdc-notched-outline__leading"></span>
             <span class="mdc-notched-outline__notch">
-              <span id="outlined-select-label" class="mdc-floating-label"
+              <span
+                id="outlined-select-label-main-metric"
+                class="mdc-floating-label"
                 >Main Metric</span
               >
             </span>
@@ -47,7 +53,7 @@
           </span>
           <span class="mdc-select__selected-text-container">
             <span
-              id="demo-selected-text"
+              id="demo-selected-text-main-metric"
               class="mdc-select__selected-text"
             ></span>
           </span>
@@ -93,11 +99,16 @@
       </div>
 
       <div class="user-input date-range mdc-select mdc-select--outlined">
-        <div class="mdc-select__anchor" aria-labelledby="outlined-select-label">
+        <div
+          class="mdc-select__anchor"
+          aria-labelledby="outlined-select-label-date-range"
+        >
           <span class="mdc-notched-outline">
             <span class="mdc-notched-outline__leading"></span>
             <span class="mdc-notched-outline__notch">
-              <span id="outlined-select-label" class="mdc-floating-label"
+              <span
+                id="outlined-select-label-date-range"
+                class="mdc-floating-label"
                 >Date Range</span
               >
             </span>
@@ -105,7 +116,7 @@
           </span>
           <span class="mdc-select__selected-text-container">
             <span
-              id="demo-selected-text"
+              id="demo-selected-text-date-range"
               class="mdc-select__selected-text"
             ></span>
           </span>
@@ -159,11 +170,11 @@
       </div>
 
       <button class="build-plan mdc-button">
-        <div class="mdc-button__ripple"></div>
+        <span class="mdc-button__ripple"></span>
         <span class="mdc-button__label">Build Plan</span>
       </button>
 
-      <img class="progress" src="../assets/progress.gif" />
+      <img class="progress" src="../assets/progress.gif" alt="In progress..." />
 
       <!-- <textarea class="textarea"></textarea> -->
     </div>
