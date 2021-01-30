@@ -1,25 +1,25 @@
 <!DOCTYPE html>
 
 <html lang="ru">
-<head>
-    <meta charset="utf-8"/>
-    <link rel="stylesheet" href="popup.css"/>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="popup.css" />
     <link
-            href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css"
-            rel="stylesheet"
+      href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css"
+      rel="stylesheet"
     />
     <link
-            rel="stylesheet"
-            href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
     />
     <title>Performance Planner Analyzer</title>
-</head>
+  </head>
 
-<body>
-<div class="container">
-    <label
-            class="user-input plan-name mdc-text-field mdc-text-field--outlined"
-    >
+  <body>
+    <div class="container">
+      <label
+        class="user-input plan-name mdc-text-field mdc-text-field--outlined"
+      >
         <span class="mdc-notched-outline">
           <span class="mdc-notched-outline__leading"></span>
           <span class="mdc-notched-outline__notch">
@@ -28,148 +28,158 @@
           <span class="mdc-notched-outline__trailing"></span>
         </span>
         <input
-                type="text"
-                class="mdc-text-field__input"
-                aria-labelledby="my-label-id"
-                required
+          type="text"
+          class="mdc-text-field__input"
+          aria-labelledby="my-label-id"
+          required
         />
-    </label>
+      </label>
 
-    <div class="user-input main-metric mdc-select mdc-select--outlined">
-        <div class="mdc-select__anchor" aria-labelledby="outlined-select-label-main-metric">
+      <div class="user-input main-metric mdc-select mdc-select--outlined">
+        <div
+          class="mdc-select__anchor"
+          aria-labelledby="outlined-select-label-main-metric"
+        >
           <span class="mdc-notched-outline">
             <span class="mdc-notched-outline__leading"></span>
             <span class="mdc-notched-outline__notch">
-              <span id="outlined-select-label-main-metric" class="mdc-floating-label"
-              >Main Metric</span
+              <span
+                id="outlined-select-label-main-metric"
+                class="mdc-floating-label"
+                >Main Metric</span
               >
             </span>
             <span class="mdc-notched-outline__trailing"></span>
           </span>
-            <span class="mdc-select__selected-text-container">
+          <span class="mdc-select__selected-text-container">
             <span
-                    id="demo-selected-text-main-metric"
-                    class="mdc-select__selected-text"
+              id="demo-selected-text-main-metric"
+              class="mdc-select__selected-text"
             ></span>
           </span>
-            <span class="mdc-select__dropdown-icon">
+          <span class="mdc-select__dropdown-icon">
             <svg
-                    class="mdc-select__dropdown-icon-graphic"
-                    viewBox="7 10 10 5"
-                    focusable="false"
+              class="mdc-select__dropdown-icon-graphic"
+              viewBox="7 10 10 5"
+              focusable="false"
             >
               <polygon
-                      class="mdc-select__dropdown-icon-inactive"
-                      stroke="none"
-                      fill-rule="evenodd"
-                      points="7 10 12 15 17 10"
+                class="mdc-select__dropdown-icon-inactive"
+                stroke="none"
+                fill-rule="evenodd"
+                points="7 10 12 15 17 10"
               ></polygon>
               <polygon
-                      class="mdc-select__dropdown-icon-active"
-                      stroke="none"
-                      fill-rule="evenodd"
-                      points="7 15 12 10 17 15"
+                class="mdc-select__dropdown-icon-active"
+                stroke="none"
+                fill-rule="evenodd"
+                points="7 15 12 10 17 15"
               ></polygon>
             </svg>
           </span>
         </div>
 
         <div
-                class="mdc-select__menu mdc-menu mdc-menu-surface mdc-menu-surface--fullwidth"
+          class="mdc-select__menu mdc-menu mdc-menu-surface mdc-menu-surface--fullwidth"
         >
-            <ul class="mdc-list">
-                <li
-                        class="mdc-list-item mdc-list-item--selected"
-                        data-value="conversions"
-                >
-                    <span class="mdc-list-item__ripple"></span>
-                    <span class="mdc-list-item__text">Conversions</span>
-                </li>
-                <li class="mdc-list-item" data-value="conversion value">
-                    <span class="mdc-list-item__ripple"></span>
-                    <span class="mdc-list-item__text">Conversion Value</span>
-                </li>
-            </ul>
+          <ul class="mdc-list">
+            <li
+              class="mdc-list-item mdc-list-item--selected"
+              data-value="conversions"
+            >
+              <span class="mdc-list-item__ripple"></span>
+              <span class="mdc-list-item__text">Conversions</span>
+            </li>
+            <li class="mdc-list-item" data-value="conversion value">
+              <span class="mdc-list-item__ripple"></span>
+              <span class="mdc-list-item__text">Conversion Value</span>
+            </li>
+          </ul>
         </div>
-    </div>
+      </div>
 
-    <div class="user-input date-range mdc-select mdc-select--outlined">
-        <div class="mdc-select__anchor" aria-labelledby="outlined-select-label-date-range">
+      <div class="user-input date-range mdc-select mdc-select--outlined">
+        <div
+          class="mdc-select__anchor"
+          aria-labelledby="outlined-select-label-date-range"
+        >
           <span class="mdc-notched-outline">
             <span class="mdc-notched-outline__leading"></span>
             <span class="mdc-notched-outline__notch">
-              <span id="outlined-select-label-date-range" class="mdc-floating-label"
-              >Date Range</span
+              <span
+                id="outlined-select-label-date-range"
+                class="mdc-floating-label"
+                >Date Range</span
               >
             </span>
             <span class="mdc-notched-outline__trailing"></span>
           </span>
-            <span class="mdc-select__selected-text-container">
+          <span class="mdc-select__selected-text-container">
             <span
-                    id="demo-selected-text-date-range"
-                    class="mdc-select__selected-text"
+              id="demo-selected-text-date-range"
+              class="mdc-select__selected-text"
             ></span>
           </span>
-            <span class="mdc-select__dropdown-icon">
+          <span class="mdc-select__dropdown-icon">
             <svg
-                    class="mdc-select__dropdown-icon-graphic"
-                    viewBox="7 10 10 5"
-                    focusable="false"
+              class="mdc-select__dropdown-icon-graphic"
+              viewBox="7 10 10 5"
+              focusable="false"
             >
               <polygon
-                      class="mdc-select__dropdown-icon-inactive"
-                      stroke="none"
-                      fill-rule="evenodd"
-                      points="7 10 12 15 17 10"
+                class="mdc-select__dropdown-icon-inactive"
+                stroke="none"
+                fill-rule="evenodd"
+                points="7 10 12 15 17 10"
               ></polygon>
               <polygon
-                      class="mdc-select__dropdown-icon-active"
-                      stroke="none"
-                      fill-rule="evenodd"
-                      points="7 15 12 10 17 15"
+                class="mdc-select__dropdown-icon-active"
+                stroke="none"
+                fill-rule="evenodd"
+                points="7 15 12 10 17 15"
               ></polygon>
             </svg>
           </span>
         </div>
 
         <div
-                class="mdc-select__menu mdc-menu mdc-menu-surface mdc-menu-surface--fullwidth"
+          class="mdc-select__menu mdc-menu mdc-menu-surface mdc-menu-surface--fullwidth"
         >
-            <ul class="mdc-list">
-                <li
-                        class="mdc-list-item mdc-list-item--selected"
-                        data-value="Next Week"
-                >
-                    <span class="mdc-list-item__ripple"></span>
-                    <span class="mdc-list-item__text">Next Week</span>
-                </li>
-                <li class="mdc-list-item" data-value="Next Month">
-                    <span class="mdc-list-item__ripple"></span>
-                    <span class="mdc-list-item__text">Next Month</span>
-                </li>
-                <li class="mdc-list-item" data-value="Next Quarter">
-                    <span class="mdc-list-item__ripple"></span>
-                    <span class="mdc-list-item__text">Next Quarter</span>
-                </li>
-                <li class="mdc-list-item" data-value="Other">
-                    <span class="mdc-list-item__ripple"></span>
-                    <span class="mdc-list-item__text">Other</span>
-                </li>
-            </ul>
+          <ul class="mdc-list">
+            <li
+              class="mdc-list-item mdc-list-item--selected"
+              data-value="Next Week"
+            >
+              <span class="mdc-list-item__ripple"></span>
+              <span class="mdc-list-item__text">Next Week</span>
+            </li>
+            <li class="mdc-list-item" data-value="Next Month">
+              <span class="mdc-list-item__ripple"></span>
+              <span class="mdc-list-item__text">Next Month</span>
+            </li>
+            <li class="mdc-list-item" data-value="Next Quarter">
+              <span class="mdc-list-item__ripple"></span>
+              <span class="mdc-list-item__text">Next Quarter</span>
+            </li>
+            <li class="mdc-list-item" data-value="Other">
+              <span class="mdc-list-item__ripple"></span>
+              <span class="mdc-list-item__text">Other</span>
+            </li>
+          </ul>
         </div>
-    </div>
+      </div>
 
-    <button class="build-plan mdc-button">
+      <button class="build-plan mdc-button">
         <span class="mdc-button__ripple"></span>
         <span class="mdc-button__label">Build Plan</span>
-    </button>
+      </button>
 
-    <img class="progress" src="../assets/progress.gif" alt="In progress..."/>
+      <img class="progress" src="../assets/progress.gif" alt="In progress..." />
 
-<!--     <textarea class="textarea"></textarea>-->
-</div>
+      <!-- <textarea class="textarea"></textarea> -->
+    </div>
 
-<script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
-<script src="popup.js"></script>
-</body>
+    <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
+    <script src="popup.js"></script>
+  </body>
 </html>
