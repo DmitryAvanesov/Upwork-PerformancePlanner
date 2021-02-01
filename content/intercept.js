@@ -5,7 +5,7 @@
   const send = XHR.send;
   const setRequestHeader = XHR.setRequestHeader;
 
-  XHR.open = function (method, url) {
+  XHR.open = function (_method, url) {
     this._url = url;
     this._requestHeaders = {};
     return open.apply(this, arguments);
@@ -37,7 +37,7 @@
         if (this.responseType !== "blob" && this.responseText) {
           try {
             const response = this.responseText;
-            const extensionId = "loddmfmefacnijdkaphhijbjgapjndgk";
+            const extensionId = "ogimbgbaldleieilnofjeienjondgmfn";
 
             if (
               this._url.startsWith(
